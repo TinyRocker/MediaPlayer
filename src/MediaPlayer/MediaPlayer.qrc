@@ -1,0 +1,14 @@
+<RCC>
+  <qresource prefix="MediaPlayer">
+    <file>Resources/MediaPlayer.ico</file>
+    <file>Resources/next_24px.ico</file>
+    <file>Resources/previous_24px.ico</file>
+    <file>Resources/close_24px_.ico</file>
+    <file>Resources/mini_24px.ico</file>
+    <file>Resources/pause_32px.ico</file>
+    <file>Resources/play_32px.ico</file>
+    <file>Resources/speaker_24px.ico</file>
+    <file>Resources/speaker_mute_24px.ico</file>
+    <file>Resources/stop_24px.ico</file>
+  </qresource>
+</RCC>
