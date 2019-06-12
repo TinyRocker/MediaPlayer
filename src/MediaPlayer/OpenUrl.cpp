@@ -7,6 +7,7 @@ using namespace std;
 OpenUrl::OpenUrl(QWidget *parent) : QDialog(parent)
 {
     connect(this, SIGNAL(isAccept()), parent, SLOT(openUrl()));
+    connect(this, SIGNAL(clearUrlData()), parent, SLOT(clearUrlData()));
 }
 
 OpenUrl::~OpenUrl()
@@ -22,4 +23,9 @@ void OpenUrl::accept()
 void OpenUrl::reject()
 {
     QDialog::reject();
+}
+
+void OpenUrl::clearUrl()
+{
+    clearUrlData();
 }

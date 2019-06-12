@@ -21,7 +21,7 @@
     <normaloff>:/MediaPlayer/Resources/MediaPlayer.ico</normaloff>:/MediaPlayer/Resources/MediaPlayer.ico</iconset>
   </property>
   <property name="styleSheet">
-   <string notr="true"/>
+   <string notr="true">background-color: rgb(0, 0, 0);</string>
   </property>
   <widget class="VideoWidget" name="videoWidget">
    <property name="geometry">

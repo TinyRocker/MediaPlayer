@@ -245,6 +245,12 @@ void VideoWidget::resizeGL(int w, int h)
 
 void VideoWidget::paintGL()
 {
+    std::lock_guard<std::mutex> lck(m_mutex);
+
+    if (!(m_yuv[0] && m_yuv[1] && m_yuv[2]))
+    {
+        return;
+    }
     // Y
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, m_texs[0]);  //0²ã°ó¶¨µ½Y²ÄÖÊ

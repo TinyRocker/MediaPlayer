@@ -143,7 +143,10 @@
     <ClInclude Include="Decode.h" />
     <ClInclude Include="DecodeThread.h" />
     <ClInclude Include="Demux.h" />
-    <ClInclude Include="MediaPlayThread.h" />
+    <ClInclude Include="MediaPlayThread.h">
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\..\..\include;.\..\..\include\ffmpeg;.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(Configuration);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtMultimedia;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtOpenGLExtensions;$(QTDIR)\include\QtWidgets</IncludePath>
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\..\..\include;.\..\..\include\ffmpeg;.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(Configuration);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtMultimedia;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtOpenGLExtensions;$(QTDIR)\include\QtWidgets</IncludePath>
+    </ClInclude>
     <ClInclude Include="FFmpegUtils.h" />
     <QtMoc Include="OpenUrl.h">
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\..\..\include;.\..\..\include\ffmpeg;.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(Configuration);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtMultimedia;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtOpenGLExtensions;$(QTDIR)\include\QtWidgets</IncludePath>

@@ -12,9 +12,12 @@ public:
     //bool isAccept() { return m_isAccept; };
 signals:
     void isAccept();
+    void clearUrlData();
+
 public slots:
     void accept();
     void reject();
+    void clearUrl();
 private:
     //bool m_isAccept = false;
 };

@@ -142,6 +142,9 @@ AVPacket *Demux::read()
     {
         av_packet_free(&pkt);
         LOG(ERROR) << "av_read_frame failed! reason:" << errstr(ret);
+        if (strcmp(errstr(ret).c_str(), "End of file") == 0)
+        {
+        }
         return nullptr;
     }
 

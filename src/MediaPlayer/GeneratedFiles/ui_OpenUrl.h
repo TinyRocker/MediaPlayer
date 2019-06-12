@@ -38,6 +38,7 @@ public:
         QIcon icon;
         icon.addFile(QString::fromUtf8(":/MediaPlayer/Resources/MediaPlayer.ico"), QSize(), QIcon::Normal, QIcon::Off);
         DialogOpenUrl->setWindowIcon(icon);
+        DialogOpenUrl->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 255, 255);"));
         label_1 = new QLabel(DialogOpenUrl);
         label_1->setObjectName(QString::fromUtf8("label_1"));
         label_1->setGeometry(QRect(20, 10, 340, 20));
@@ -47,6 +48,7 @@ public:
         label_2->setGeometry(QRect(20, 30, 340, 20));
         label_2->setStyleSheet(QString::fromUtf8(""));
         comboBox_url = new QComboBox(DialogOpenUrl);
+        comboBox_url->addItem(QString());
         comboBox_url->addItem(QString());
         comboBox_url->setObjectName(QString::fromUtf8("comboBox_url"));
         comboBox_url->setGeometry(QRect(50, 60, 310, 20));
@@ -67,6 +69,7 @@ public:
         retranslateUi(DialogOpenUrl);
         QObject::connect(buttonBox_url, SIGNAL(accepted()), DialogOpenUrl, SLOT(accept()));
         QObject::connect(buttonBox_url, SIGNAL(rejected()), DialogOpenUrl, SLOT(reject()));
+        QObject::connect(pushButton_clear, SIGNAL(clicked()), DialogOpenUrl, SLOT(clearUrl()));
 
         QMetaObject::connectSlotsByName(DialogOpenUrl);
     } // setupUi
@@ -77,6 +80,7 @@ public:
         label_1->setText(QApplication::translate("DialogOpenUrl", "\350\276\223\345\205\245\347\275\221\347\273\234\344\270\212\347\232\204url\345\234\260\345\235\200\346\210\226\350\267\257\345\276\204\357\274\214\346\224\257\346\214\201http https", nullptr));
         label_2->setText(QApplication::translate("DialogOpenUrl", "\344\276\213\345\246\202\357\274\232rtmp://live.hkstv.hk.lxdns.com/live/hks2", nullptr));
         comboBox_url->setItemText(0, QApplication::translate("DialogOpenUrl", "rtmp://live.hkstv.hk.lxdns.com/live/hks2", nullptr));
+        comboBox_url->setItemText(1, QApplication::translate("DialogOpenUrl", "rtmp://192.168.1.111/live", nullptr));
 
         label_3->setText(QApplication::translate("DialogOpenUrl", "URL:", nullptr));
         pushButton_clear->setText(QApplication::translate("DialogOpenUrl", "\346\270\205\351\231\244\350\256\260\345\275\225", nullptr));

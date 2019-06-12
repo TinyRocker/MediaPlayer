@@ -45,7 +45,7 @@ public:
         QIcon icon;
         icon.addFile(QString::fromUtf8(":/MediaPlayer/Resources/MediaPlayer.ico"), QSize(), QIcon::Normal, QIcon::Off);
         MediaPlayerClass->setWindowIcon(icon);
-        MediaPlayerClass->setStyleSheet(QString::fromUtf8(""));
+        MediaPlayerClass->setStyleSheet(QString::fromUtf8("background-color: rgb(0, 0, 0);"));
         videoWidget = new VideoWidget(MediaPlayerClass);
         videoWidget->setObjectName(QString::fromUtf8("videoWidget"));
         videoWidget->setGeometry(QRect(0, 0, 800, 500));

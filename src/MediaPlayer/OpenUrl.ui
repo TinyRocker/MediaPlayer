@@ -17,6 +17,9 @@
    <iconset resource="MediaPlayer.qrc">
     <normaloff>:/MediaPlayer/Resources/MediaPlayer.ico</normaloff>:/MediaPlayer/Resources/MediaPlayer.ico</iconset>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(255, 255, 255);</string>
+  </property>
   <widget class="QLabel" name="label_1">
    <property name="geometry">
     <rect>
@@ -64,6 +67,11 @@
    <item>
     <property name="text">
      <string>rtmp://live.hkstv.hk.lxdns.com/live/hks2</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>rtmp://192.168.1.111/live</string>
     </property>
    </item>
   </widget>
@@ -149,5 +157,24 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>pushButton_clear</sender>
+   <signal>clicked()</signal>
+   <receiver>DialogOpenUrl</receiver>
+   <slot>clearUrl()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>51</x>
+     <y>136</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>54</x>
+     <y>204</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
+ <slots>
+  <slot>clearUrl()</slot>
+ </slots>
 </ui>

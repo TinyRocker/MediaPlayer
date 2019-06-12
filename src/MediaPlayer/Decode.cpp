@@ -67,11 +67,6 @@ bool Decode::open(AVCodecParameters * param)
         return false;
     }
 
-    if (AVMEDIA_TYPE_VIDEO == m_codecParam->codec_type)
-    {
-        m_codecCtx->thread_count = std::thread::hardware_concurrency();
-    }
-
     return true;
 }
 

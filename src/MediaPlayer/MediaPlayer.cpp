@@ -4,6 +4,8 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QMouseEvent>
+#include <QApplication>
+#include <QDesktopWidget>
 #include <QThread>
 
 MediaPlayer::MediaPlayer(QWidget *parent)
@@ -82,28 +84,49 @@ void MediaPlayer::timerEvent(QTimerEvent * event)
         ui.horizontalSlider_media->setValue(ui.horizontalSlider_media->maximum() * pos);
     }
     
-    if (!m_slideMoved && file_time >= 0)
+    if (!m_slideMoved && file_time > 0)
     {
-        play_time /= 1000;
-        file_time /= 1000;
+        int play_time_s = play_time / 1000;
+        int file_time_s = file_time / 1000;
 
-        int play_h = play_time / 3600;
-        int play_m = (play_time % 3600) / 60;
-        int play_s = play_time % 60;
+        int play_h = play_time_s / 3600;
+        int play_m = (play_time_s % 3600) / 60;
+        int play_s = play_time_s % 60;
 
-        int h = file_time / 3600;
-        int m = (file_time % 3600) / 60;
-        int s = file_time % 60;
+        int h = file_time_s / 3600;
+        int m = (file_time_s % 3600) / 60;
+        int s = file_time_s % 60;
 
         char buf[32] = { 0 };
         sprintf(buf, "%02d:%02d:%02d / %02d:%02d:%02d", play_h, play_m, play_s, h, m, s);
         ui.label_playtime->setText(buf);
     }
+    if (file_time > 0 && file_time - play_time < 500)
+    {
+        LOG(INFO) << "end of file, stop!";
+        stop();
+    }
 }
 
 void MediaPlayer::resizeEvent(QResizeEvent * event)
 {
-    ui.videoWidget->resize(this->size());
+    QRect scRect = QApplication::desktop()->screenGeometry(this);  // 获取UI当前窗口
+    double frameRate = (double)ui.videoWidget->videoWidth() / (double)ui.videoWidget->videoHeight();
+    QSize size = this->size();
+    double widgetRate = (double)size.width() / (double)size.height();
+    if (widgetRate > frameRate)
+    {
+        size.setWidth(size.height() * frameRate);
+    }
+    else
+    {
+        size.setHeight(size.width() / frameRate);
+    }
+
+    QSize moveSize = this->size() - size;
+    moveSize /= 2;
+    ui.videoWidget->resize(size);
+    ui.videoWidget->move(moveSize.width(), moveSize.height());
     ui.bottom_bar->resize(this->width(), ui.bottom_bar->height());
     ui.horizontalSlider_media->resize(ui.bottom_bar->width(), ui.horizontalSlider_media->height());
     ui.control_bar->move((ui.bottom_bar->width()-ui.control_bar->width()) / 2, ui.control_bar->y());
@@ -217,12 +240,17 @@ void MediaPlayer::openFileOrUrl()
         LOG(ERROR) << "open " << filename.toLocal8Bit().constData() << " failed!";
         return;
     }
+    resizeEvent(nullptr);
 }
 
 void MediaPlayer::openUrl()
 {
-    //const char *liveurl = "rtmp://live.hkstv.hk.lxdns.com/live/hks2"; // 香港卫视
     QString filename = ui_openUrl.comboBox_url->currentText();
+    if (filename.compare("") != 0 && ui_openUrl.comboBox_url->findText(filename) == -1)
+    {
+        ui_openUrl.comboBox_url->insertItem(0, filename);
+    }
+
     if (!open(filename))
     {
         LOG(ERROR) << "open " << filename.toLocal8Bit().constData() << " failed!";
@@ -269,4 +297,9 @@ void MediaPlayer::sliderMoved()
     m_media->seek(pos);
     m_slideMoved = false;
     m_time.restart();
+}
+
+void MediaPlayer::clearUrlData()
+{
+    ui_openUrl.comboBox_url->clear();
 }

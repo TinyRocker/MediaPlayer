@@ -39,7 +39,7 @@ public slots:
     void sliderPressed();
     void sliderReleased();
     void sliderMoved();
-
+    void clearUrlData();
 private:
     Ui::MediaPlayerClass ui;
     Ui::DialogOpenUrl ui_openUrl;
