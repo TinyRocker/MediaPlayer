@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <QThread>
 #include <string>
 #include <mutex>
@@ -24,6 +24,8 @@ public:
     bool pause() const { return m_pause; };
     int64_t pts() const { return m_pts; }
     int64_t totalMs() const { return m_totalMs; };
+    int width() const;
+    int height() const;
 protected:
     virtual void run();
 private:
@@ -34,8 +36,8 @@ private:
     VideoThread     *m_video = nullptr;
     AudioThread     *m_audio = nullptr;
 
-    bool    m_pause = false;    // ÔİÍ£²¥·Å
-    int64_t m_pts = 0;          // µ±Ç°²¥·ÅÊ±¼ä
-    int64_t m_totalMs = 0;      // ÎÄ¼ş×ÜÊ±³¤
+    bool    m_pause = false;    // æš‚åœæ’­æ”¾
+    int64_t m_pts = 0;          // å½“å‰æ’­æ”¾æ—¶é—´
+    int64_t m_totalMs = 0;      // æ–‡ä»¶æ€»æ—¶é•¿
 };
 

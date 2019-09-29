@@ -1,4 +1,4 @@
-#include "Decode.h"
+ï»¿#include "Decode.h"
 #include "FFmpegUtils.h"
 #include "glog/logging.h"
 
@@ -30,7 +30,7 @@ bool Decode::open(AVCodecParameters * param)
     m_codecParam = param;
     LOG(INFO) << "codec name:" << avcodec_descriptor_get(m_codecParam->codec_id)->name;
 
-    // 1.ÕÒµ½½âÂëÆ÷
+    // 1.æ‰¾åˆ°è§£ç å™¨
     AVCodec *codec = avcodec_find_decoder(m_codecParam->codec_id);
     if (!codec)
     {
@@ -38,7 +38,7 @@ bool Decode::open(AVCodecParameters * param)
         return false;
     }
 
-    // 2.ÅäÖÃ½âÂëÆ÷ÉÏÏÂÎÄ²ÎÊı
+    // 2.é…ç½®è§£ç å™¨ä¸Šä¸‹æ–‡å‚æ•°
     m_codecCtx = avcodec_alloc_context3(codec);
     if (!m_codecCtx)
     {
@@ -47,7 +47,7 @@ bool Decode::open(AVCodecParameters * param)
     }
     if (AVMEDIA_TYPE_VIDEO == m_codecCtx->codec_type)
     {
-        m_codecCtx->thread_count = std::thread::hardware_concurrency();
+        m_codecCtx->thread_count = 1;
     }
     
     int ret = avcodec_parameters_to_context(m_codecCtx, m_codecParam);
@@ -58,7 +58,7 @@ bool Decode::open(AVCodecParameters * param)
         return false;
     }
 
-    // 3.´ò¿ª½âÂëÆ÷ÉÏÏÂÎÄ
+    // 3.æ‰“å¼€è§£ç å™¨ä¸Šä¸‹æ–‡
     ret = avcodec_open2(m_codecCtx, codec, nullptr);
     if (ret < 0)
     {
@@ -100,7 +100,7 @@ void Decode::clear()
 
 bool Decode::send(AVPacket * pkt)
 {
-    // Èİ´í´¦Àí
+    // å®¹é”™å¤„ç†
     if (!pkt || pkt->size <= 0 || !pkt->data)
     {
         LOG(ERROR) << "param error!";
@@ -131,7 +131,7 @@ AVFrame * Decode::recv()
     if (!m_codecCtx)
     {
         LOG(ERROR) << "avcodec not open!";
-        return false;
+        return nullptr;
     }
 
     AVFrame *frame = av_frame_alloc();
@@ -153,7 +153,7 @@ AVFrame * Decode::recv()
         }
         return nullptr;
     }
-    m_pts = frame->pts;     // ±£´æ½âÂëÖ¡µÄpts
+    m_pts = frame->pts;     // ä¿å­˜è§£ç å¸§çš„pts
 
     return frame;
 }

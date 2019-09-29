@@ -1,4 +1,4 @@
-#include "Demux.h"
+ï»¿#include "Demux.h"
 #include "FFmpegUtils.h"
 #include "glog/logging.h"
 #include <QThread>
@@ -24,7 +24,7 @@ bool Demux::open(const char * url)
 
     m_url = url;
     
-    // 1. ´ò¿ªurl
+    // 1. æ‰“å¼€url
     int ret = avformat_open_input(&m_ic, url, nullptr, nullptr);
     if (ret < 0)
     {
@@ -33,7 +33,7 @@ bool Demux::open(const char * url)
     }
     LOG(INFO) << "avformat_open_input " << url << " success!";
 
-    // 2.»ñÈ¡Á÷ĞÅÏ¢
+    // 2.è·å–æµä¿¡æ¯
     ret = avformat_find_stream_info(m_ic, nullptr);
     if (ret < 0)
     {
@@ -41,19 +41,19 @@ bool Demux::open(const char * url)
         return false;
     }
 
-    m_totalMs = m_ic->duration / (AV_TIME_BASE / 1000); // ºÁÃë
-    int64_t totals = m_ic->duration / AV_TIME_BASE; // duration / AV_TIME_BASE µÃµ½Ãë
+    m_totalMs = m_ic->duration / (AV_TIME_BASE / 1000); // æ¯«ç§’
+    int64_t totals = m_ic->duration / AV_TIME_BASE; // duration / AV_TIME_BASE å¾—åˆ°ç§’
     m_hours = totals / 3600;
     m_minutes = (totals % 3600) / 60;
     m_seconds = totals % 60;
     LOG(INFO) << "meida time: " << m_hours << ":" << m_minutes << ":" << m_seconds;
 
-    /// ´òÓ¡Á÷ĞÅÏ¢
+    /// æ‰“å°æµä¿¡æ¯
     std::cout << "====================stream info==========================" << std::endl;
     av_dump_format(m_ic, 0, url, 0);
     std::cout << "=========================================================" << std::endl;
     
-    // 3.»ñÈ¡ÊÓÆµÁ÷ĞÅÏ¢£¨º¯Êı»ñÈ¡£©
+    // 3.è·å–è§†é¢‘æµä¿¡æ¯ï¼ˆå‡½æ•°è·å–ï¼‰
     m_vIndex = av_find_best_stream(m_ic, AVMEDIA_TYPE_VIDEO, -1, -1, nullptr, 0);
     if (m_vIndex >= 0)
     {
@@ -61,23 +61,23 @@ bool Demux::open(const char * url)
         m_width = m_vs->codecpar->width;
         m_height = m_vs->codecpar->height;
 
-        LOG(INFO) << "------------ÊÓÆµĞÅÏ¢: " << m_vIndex << " ------------";
+        LOG(INFO) << "------------è§†é¢‘ä¿¡æ¯: " << m_vIndex << " ------------";
         LOG(INFO) << "codec_id = " << m_vs->codecpar->codec_id;
         LOG(INFO) << "format = " << m_vs->codecpar->format;
         LOG(INFO) << "" << m_width << " * " << m_height;
-        LOG(INFO) << "video fps = " << r2d(m_vs->avg_frame_rate);  ///Ö¡ÂÊÒª×ö·ÖÊı×ª»»
+        LOG(INFO) << "video fps = " << r2d(m_vs->avg_frame_rate);  ///å¸§ç‡è¦åšåˆ†æ•°è½¬æ¢
     }
     
-    // 4.»ñÈ¡ÒôÆµÁ÷ĞÅÏ¢£¨º¯Êı»ñÈ¡£©
+    // 4.è·å–éŸ³é¢‘æµä¿¡æ¯ï¼ˆå‡½æ•°è·å–ï¼‰
     m_aIndex = av_find_best_stream(m_ic, AVMEDIA_TYPE_AUDIO, -1, -1, nullptr, 0);
     if (m_aIndex >= 0)
     {
         m_as = m_ic->streams[m_aIndex];
 
-        // Ò»Ö¡Êı¾İ 1024 * 6(Í¨µÀÊı) * 2(16bit) = 12288, fps = sample_rate / 12288
+        // ä¸€å¸§æ•°æ® 1024 * 6(é€šé“æ•°) * 2(16bit) = 12288, fps = sample_rate / 12288
         m_sampleRate = m_as->codecpar->sample_rate;
         m_channels = m_as->codecpar->channels;
-        LOG(INFO) << "------------ÒôÆµĞÅÏ¢: " << m_aIndex << " ------------";
+        LOG(INFO) << "------------éŸ³é¢‘ä¿¡æ¯: " << m_aIndex << " ------------";
         LOG(INFO) << "codec_id = " << m_as->codecpar->codec_id;
         LOG(INFO) << "format = " << m_as->codecpar->format;
         LOG(INFO) << "sample_rate = " << m_as->codecpar->sample_rate;
@@ -114,7 +114,7 @@ void Demux::clear()
 
     if (m_ic)
     {
-        // ÇåÀí¶ÁÈ¡»º³å
+        // æ¸…ç†è¯»å–ç¼“å†²
         avformat_flush(m_ic);
     }
 }
@@ -136,7 +136,7 @@ AVPacket *Demux::read()
         return nullptr;
     }
 
-    // ¶ÁÈ¡Ò»Ö¡
+    // è¯»å–ä¸€å¸§
     int ret = av_read_frame(m_ic, pkt);
     if (ret < 0)
     {
@@ -148,7 +148,7 @@ AVPacket *Demux::read()
         return nullptr;
     }
 
-    // pts×ª»»ÎªºÁÃë
+    // ptsè½¬æ¢ä¸ºæ¯«ç§’
     av_packet_rescale_ts(pkt, m_ic->streams[pkt->stream_index]->time_base, AVRational{ 1, 1000 });
 
     return pkt;
@@ -158,7 +158,7 @@ AVPacket * Demux::readVideoOnly()
 {
     AVPacket *pkt = nullptr;
 
-    // ·ÀÖ¹×èÈû
+    // é˜²æ­¢é˜»å¡
     for (int i = 0; i < 100; ++i)
     {
         pkt = read();
@@ -183,7 +183,7 @@ AVPacket * Demux::readAudioOnly()
 {
     AVPacket *pkt = nullptr;
 
-    // ·ÀÖ¹×èÈû
+    // é˜²æ­¢é˜»å¡
     for (int i = 0; i < 100; ++i)
     {
         pkt = read();
@@ -222,11 +222,11 @@ bool Demux::seek(double pos)
     }
 
     int64_t seekPos = 0;
-    int index = -1; // Ä¬ÈÏÊ¹ÓÃÎÄ¼şË÷Òı
+    int index = -1; // é»˜è®¤ä½¿ç”¨æ–‡ä»¶ç´¢å¼•
 
-    // ÇåÀí¶ÁÈ¡»º³å
+    // æ¸…ç†è¯»å–ç¼“å†²
     avformat_flush(m_ic);
-    if (m_ic->duration > 0)    // Èç¹ûÎÄ¼şÊ±³¤ÓĞĞ§
+    if (m_ic->duration > 0)    // å¦‚æœæ–‡ä»¶æ—¶é•¿æœ‰æ•ˆ
     {
         seekPos = m_ic->duration * pos;
         index = -1;
@@ -247,7 +247,7 @@ bool Demux::seek(double pos)
         return false;
     }
 
-    int ret = av_seek_frame(m_ic, index, seekPos, AVSEEK_FLAG_BACKWARD | AVSEEK_FLAG_FRAME);  // ÏòÇ°ÕÒ¹Ø¼üÖ¡
+    int ret = av_seek_frame(m_ic, index, seekPos, AVSEEK_FLAG_BACKWARD | AVSEEK_FLAG_FRAME);  // å‘å‰æ‰¾å…³é”®å¸§
     if (ret < 0)
     {
         LOG(ERROR) << "av_seek_frame failed! reason:" << errstr(ret);

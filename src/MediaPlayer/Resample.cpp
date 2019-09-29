@@ -1,4 +1,4 @@
-#include "Resample.h"
+ï»¿#include "Resample.h"
 #include "FFmpegUtils.h"
 #include "glog/logging.h"
 
@@ -28,13 +28,13 @@ bool Resample::open(AVCodecParameters * param)
     m_sampleSize = 16;
     m_channels = param->channels;
 
-    // ÒôÆµÖØ²ÉÑù ÉÏÏÂÎÄ³õÊ¼»¯,Èç¹ûactx_ÎªNULL»á·ÖÅä¿Õ¼ä
+    // éŸ³é¢‘é‡é‡‡æ · ä¸Šä¸‹æ–‡åˆå§‹åŒ–,å¦‚æžœactx_ä¸ºNULLä¼šåˆ†é…ç©ºé—´
     m_swrCtx_ = swr_alloc_set_opts(
         m_swrCtx_,
-        av_get_default_channel_layout(param->channels),  // Êä³ö¸ñÊ½
-        AV_SAMPLE_FMT_S16,                  // Êä³öÑù±¾¸ñÊ½
-        param->sample_rate,                 // Êä³ö²ÉÑùÂÊ
-        av_get_default_channel_layout(param->channels),  // ÊäÈë¸ñÊ½
+        av_get_default_channel_layout(param->channels),  // è¾“å‡ºæ ¼å¼
+        AV_SAMPLE_FMT_S16,                  // è¾“å‡ºæ ·æœ¬æ ¼å¼
+        param->sample_rate,                 // è¾“å‡ºé‡‡æ ·çŽ‡
+        av_get_default_channel_layout(param->channels),  // è¾“å…¥æ ¼å¼
         (AVSampleFormat)param->format,
         param->sample_rate,
         0,
@@ -89,8 +89,8 @@ int Resample::resample(AVFrame * indata, unsigned char * outdata)
     int ret = swr_convert(
         m_swrCtx_,
         data,
-        indata->nb_samples,             // Êä³ö
-        (const uint8_t **)indata->data, // ÊäÈë
+        indata->nb_samples,             // è¾“å‡º
+        (const uint8_t **)indata->data, // è¾“å…¥
         indata->nb_samples);
     if (ret < 0)
     {

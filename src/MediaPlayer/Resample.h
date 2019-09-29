@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <mutex>
 
 class AVCodecParameters;
@@ -11,12 +11,12 @@ public:
     Resample();
     virtual ~Resample();
 
-    // Êä³ö²ÎÊıºÍÊäÈë²ÎÊıÒ»ÖÂ ³ıÁË²ÉÑù¸ñÊ½ Êä³öÎªs16
+    // è¾“å‡ºå‚æ•°å’Œè¾“å…¥å‚æ•°ä¸€è‡´ é™¤äº†é‡‡æ ·æ ¼å¼ è¾“å‡ºä¸ºs16
     bool open(AVCodecParameters *param);
     void close();
     //void clear();
 
-    // ·µ»ØÖØ²ÉÑùºó´óĞ¡, ²»¹Ü³É¹¦Óë·ñ¶¼ÊÍ·Åindata¿Õ¼ä
+    // è¿”å›é‡é‡‡æ ·åå¤§å°, ä¸ç®¡æˆåŠŸä¸å¦éƒ½é‡Šæ”¾indataç©ºé—´
     int resample(AVFrame *indata, unsigned char *outdata);
 
     int sampleRate() const { return m_sampleRate; }

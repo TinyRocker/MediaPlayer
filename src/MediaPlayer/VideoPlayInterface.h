@@ -1,8 +1,8 @@
-#pragma once
+ï»¿#pragma once
 
 class AVFrame;
 
-// ÊÓÆµ²¥·Å½Ó¿ÚÀà
+// è§†é¢‘æ’­æ”¾æ¥å£ç±»
 class VideoPlayInterface
 {
 public:

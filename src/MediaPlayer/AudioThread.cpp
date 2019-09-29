@@ -1,4 +1,4 @@
-#include "AudioThread.h"
+ï»¿#include "AudioThread.h"
 #include "Decode.h"
 #include "Resample.h"
 #include "AudioPlay.h"
@@ -59,7 +59,7 @@ bool AudioThread::open(AVCodecParameters *param)
     m_pause = false;
     m_start = true;
     
-    start();    // ¿ªÊ¼qtÏß³Ì
+    start();    // å¼€å§‹qtçº¿ç¨‹
 
     return true;
 }
@@ -88,11 +88,11 @@ void AudioThread::close()
         m_play = nullptr;
     }
 
-    clearCache();    // ÇåÀí¶ÓÁĞ»º³å
+    clearCache();    // æ¸…ç†é˜Ÿåˆ—ç¼“å†²
     m_start = false;
     m_mutex.unlock();
 
-    wait();     // µÈ´ıqtÏß³ÌÍË³ö
+    wait();     // ç­‰å¾…qtçº¿ç¨‹é€€å‡º
 }
 
 void AudioThread::clear()
@@ -112,7 +112,7 @@ void AudioThread::clear()
 
 void AudioThread::setPause(bool pause)
 {
-    m_pause = pause;    // ½«pauseÓÅÏÈ¼¶Éè¸ß£¬ÒÑÊµÏÖÔÚÁíÍâÒ»¸öÏß³ÌÖĞĞŞ¸ÄÖµ¿ÉÒÔÁ¢¼´ÉúĞ§
+    m_pause = pause;    // å°†pauseä¼˜å…ˆçº§è®¾é«˜ï¼Œå·²å®ç°åœ¨å¦å¤–ä¸€ä¸ªçº¿ç¨‹ä¸­ä¿®æ”¹å€¼å¯ä»¥ç«‹å³ç”Ÿæ•ˆ
 
     std::lock_guard<std::mutex> lck(m_mutex);
     if (m_play)
@@ -133,7 +133,7 @@ void AudioThread::setVolumeValue(double num)
 
 void AudioThread::run()
 {
-    uint8_t *pcm = new uint8_t[1024 * 1024 * 10];   // ·ÖÅä10M¿Õ¼ä
+    uint8_t *pcm = new uint8_t[1024 * 1024 * 10];   // åˆ†é…10Mç©ºé—´
 
     while (m_start)
     {
@@ -172,7 +172,7 @@ void AudioThread::run()
             continue;
         }
 
-        // Ò»´Îsend¶à´Îrecv
+        // ä¸€æ¬¡sendå¤šæ¬¡recv
         while (m_start && !m_pause)
         {
             AVFrame *frame = m_decode->recv();
@@ -182,15 +182,15 @@ void AudioThread::run()
                 break;
             }
 
-            // µ±Ç°½âÂëµÄpts¼õÈ¥»º³åÖĞÎ´²¥·ÅµÄÊ±¼ä
+            // å½“å‰è§£ç çš„ptså‡å»ç¼“å†²ä¸­æœªæ’­æ”¾çš„æ—¶é—´
             m_pts = m_decode->pts() - m_play->noPlayMs();
 
-            // ¿ªÊ¼ÖØ²ÉÑù
+            // å¼€å§‹é‡é‡‡æ ·
             int size = m_resample->resample(frame, pcm);
-            Decode::freeFrame(&frame); // ÊÍ·Å×ÊÔ´
+            Decode::freeFrame(&frame); // é‡Šæ”¾èµ„æº
             while (size > 0 && !m_pause)
             {
-                // »º³åÎ´²¥·ÅÍê£¬¿Õ¼ä²»¹»
+                // ç¼“å†²æœªæ’­æ”¾å®Œï¼Œç©ºé—´ä¸å¤Ÿ
                 if (m_play->freeSpaceSize() < size)
                 {
                     LOG(DETAIL) << "freeSpaceSize is not enough!";

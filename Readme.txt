@@ -1,1 +1,2 @@
-ffmpeg 4.1.3
+ffmpeg 4.2.1
+Qt 5.13.0

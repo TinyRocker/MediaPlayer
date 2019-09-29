@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <string>
 #include <mutex>
 
@@ -13,25 +13,25 @@ public:
     Demux();
     virtual ~Demux();
 
-    // ´´½¨¶ÔÏó, ´ò¿ªÃ½ÌåÎÄ¼ş»òÁ÷Ã½ÌåÎÄ¼ş rtsp rtmp
+    // åˆ›å»ºå¯¹è±¡, æ‰“å¼€åª’ä½“æ–‡ä»¶æˆ–æµåª’ä½“æ–‡ä»¶ rtsp rtmp
     bool open(const char *url);
     void close();
     void clear();
 
-    // ·µ»ØAVPacket*¿Õ¼ä, ÊÍ·Å£¬av_packet_free();
+    // è¿”å›AVPacket*ç©ºé—´, é‡Šæ”¾ï¼Œav_packet_free();
     AVPacket* read();
     AVPacket* readVideoOnly();
     AVPacket* readAudioOnly();
 
     static void freePacket(AVPacket **packet);
 
-    // seekÎ»ÖÃ pos 0.0 ~ 1.0 Ö®¼ä
+    // seekä½ç½® pos 0.0 ~ 1.0 ä¹‹é—´
     bool seek(double pos);
 
     static AVCodecParameters* getCodecParam(AVStream *stream);
     static void freeCodecParam(AVCodecParameters **param);
 
-    // »ñÈ¡ÒôÊÓÆµ²ÎÊı£¬·µ»Ø¿Õ¼äĞèÒªÇåÀí£¬avcodec_parameters_free()
+    // è·å–éŸ³è§†é¢‘å‚æ•°ï¼Œè¿”å›ç©ºé—´éœ€è¦æ¸…ç†ï¼Œavcodec_parameters_free()
     AVCodecParameters *getVideoCodecParam();
     AVCodecParameters *getAudioCodecParam();
 
@@ -48,7 +48,7 @@ public:
     int minute() const { return m_minutes; }
     int second() const { return m_seconds; }
 private:
-    std::mutex m_mutex;     // ·ÀÖ¹¶àÏß³Ìµ÷ÓÃ
+    std::mutex m_mutex;     // é˜²æ­¢å¤šçº¿ç¨‹è°ƒç”¨
     std::string m_url;
     AVFormatContext *m_ic = nullptr;
     AVStream *m_vs = nullptr;

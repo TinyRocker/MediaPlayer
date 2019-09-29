@@ -468,21 +468,19 @@ DECLARE_bool(stop_logging_if_full_disk);
 #define COMPACT_GOOGLE_LOG_DFATAL google::NullStreamFatal()
 #endif
 
-#define GOOGLE_LOG_DETAIL(counter)\
+#define GOOGLE_LOG_DETAIL(counter) \
   google::LogMessage(__FILE__, __LINE__, __FUNCTION__, google::GLOG_DETAIL, counter, \
   &google::LogMessage::SendToLog)
 #define SYSLOG_DETAIL(counter) \
   google::LogMessage(__FILE__, __LINE__, __FUNCTION__, google::GLOG_DETAIL, counter, \
   &google::LogMessage::SendToSyslogAndLog)
-
-#define GOOGLE_LOG_DEBUG(counter)\
+#define GOOGLE_LOG_DEBUG(counter) \
   google::LogMessage(__FILE__, __LINE__, __FUNCTION__, google::GLOG_DEBUG, counter, \
   &google::LogMessage::SendToLog)
 #define SYSLOG_DEBUG(counter) \
   google::LogMessage(__FILE__, __LINE__, __FUNCTION__, google::GLOG_DEBUG, counter, \
   &google::LogMessage::SendToSyslogAndLog)
-
-#define GOOGLE_LOG_INFO(counter)\
+#define GOOGLE_LOG_INFO(counter) \
   google::LogMessage(__FILE__, __LINE__, __FUNCTION__, google::GLOG_INFO, counter, \
   &google::LogMessage::SendToLog)
 #define SYSLOG_INFO(counter) \

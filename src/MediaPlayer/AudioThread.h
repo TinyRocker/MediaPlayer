@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "DecodeThread.h"
 #include <mutex>
 #include <queue>
@@ -28,6 +28,6 @@ private:
     bool m_pause = false;
     Resample    *m_resample = nullptr;
     AudioPlay   *m_play = nullptr;
-    int64_t     m_pts = 0;      // µ±Ç°²¥·ÅµÄpts
+    int64_t     m_pts = 0;      // å½“å‰æ’­æ”¾çš„pts
 };
 

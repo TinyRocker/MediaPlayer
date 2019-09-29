@@ -1,4 +1,4 @@
-#include "Slider.h"
+﻿#include "Slider.h"
 #include <QMouseEvent>
 
 Slider::Slider(QWidget *parent)
@@ -12,10 +12,12 @@ Slider::~Slider()
 
 void Slider::mousePressEvent(QMouseEvent * e)
 {
-    setValue((double)e->pos().x() / width() * maximum());
-    
-    e->accept();
-    QSlider::sliderPressed();
+    if (e->button() == Qt::LeftButton)
+    {
+        setValue((double)e->pos().x() / width() * maximum());
+        e->accept();   
+        QSlider::sliderPressed();
+    }
 }
 
 void Slider::mouseReleaseEvent(QMouseEvent * e)
@@ -26,7 +28,10 @@ void Slider::mouseReleaseEvent(QMouseEvent * e)
 
 void Slider::mouseMoveEvent(QMouseEvent * e)
 {
-    setValue((double)e->pos().x() / width() * maximum());
-    e->accept();
-    QSlider::sliderMoved(e->pos().x());
+    if (e->buttons() & Qt::LeftButton)
+    {
+        setValue((double)e->pos().x() / width() * maximum());
+        e->accept();
+        QSlider::sliderMoved(e->pos().x());
+    }
 }

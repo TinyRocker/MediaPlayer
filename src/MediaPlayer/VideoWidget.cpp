@@ -1,4 +1,4 @@
-#include "VideoWidget.h"
+ï»¿#include "VideoWidget.h"
 #include "glog/logging.h"
 
 extern "C"
@@ -6,7 +6,11 @@ extern "C"
 #include "libavutil/frame.h"
 }
 
-//×¼±¸yuvÊý¾Ý
+#define GET_STR(x) #x   //è‡ªåŠ¨åŠ åŒå¼•å·
+#define A_VER   3
+#define T_VER   4
+
+//å‡†å¤‡yuvæ•°æ®
 //ffmpeg -i LoL.mp4 -t 10 -s 240x128 -pix_fmt yuv420p out240x128.yuv
 
 VideoWidget::VideoWidget(QWidget *parent) : QOpenGLWidget(parent)
@@ -32,7 +36,7 @@ bool VideoWidget::initWidget(int width, int height)
     m_width = width;
     m_height = height;
 
-    //·ÖÅä²ÄÖÊÄÚ´æ¿Õ¼ä yuv420
+    //åˆ†é…æè´¨å†…å­˜ç©ºé—´ yuv420
     m_yuv[0] = new uint8_t[m_width * m_height];       ///Y
     m_yuv[1] = new uint8_t[m_width * m_height / 4];   ///U
     m_yuv[2] = new uint8_t[m_width * m_height / 4];   ///V
@@ -42,36 +46,36 @@ bool VideoWidget::initWidget(int width, int height)
         return false;
     }
 
-    // 5.´´½¨²ÄÖÊ
+    // 5.åˆ›å»ºæè´¨
     glGenTextures(3, m_texs);
 
     //Y
     glBindTexture(GL_TEXTURE_2D, m_texs[0]);
-    ///GL_NEAREST(ÁÙ½ü²îÖµ£¬Ð§ÂÊ¸ß£¬µ«ÂíÈü¿ËÑÏÖØ) 
-    ///GL_LINEAR (ÏßÐÔ²åÖµ£¬Ð§ÂÊµÍ£¬»­ÃæÖÊÁ¿ºÃ)
-    ///·Å´ó¹ýÂË£¬ÏßÐÔ²åÖµ  
+    ///GL_NEAREST(ä¸´è¿‘å·®å€¼ï¼Œæ•ˆçŽ‡é«˜ï¼Œä½†é©¬èµ›å…‹ä¸¥é‡) 
+    ///GL_LINEAR (çº¿æ€§æ’å€¼ï¼Œæ•ˆçŽ‡ä½Žï¼Œç”»é¢è´¨é‡å¥½)
+    ///æ”¾å¤§è¿‡æ»¤ï¼Œçº¿æ€§æ’å€¼  
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    ///ËõÐ¡¹ýÂË£¬ÏßÐÔ²åÖµ
+    ///ç¼©å°è¿‡æ»¤ï¼Œçº¿æ€§æ’å€¼
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    ///´´½¨²ÄÖÊ¿Õ¼ä
+    ///åˆ›å»ºæè´¨ç©ºé—´
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, m_width, m_height, 0, GL_RED, GL_UNSIGNED_BYTE, 0);
 
     //U
     glBindTexture(GL_TEXTURE_2D, m_texs[1]);
-    ///·Å´ó¹ýÂË£¬ ÏßÐÔ²åÖµ
+    ///æ”¾å¤§è¿‡æ»¤ï¼Œ çº¿æ€§æ’å€¼
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    ///ËõÐ¡¹ýÂË£¬ ÏßÐÔ²åÖµ
+    ///ç¼©å°è¿‡æ»¤ï¼Œ çº¿æ€§æ’å€¼
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    ///´´½¨²ÄÖÊ¿Õ¼ä
+    ///åˆ›å»ºæè´¨ç©ºé—´
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, m_width / 2, m_height / 2, 0, GL_RED, GL_UNSIGNED_BYTE, 0);
 
     //V
     glBindTexture(GL_TEXTURE_2D, m_texs[2]);
-    ///·Å´ó¹ýÂË£¬ ÏßÐÔ²åÖµ
+    ///æ”¾å¤§è¿‡æ»¤ï¼Œ çº¿æ€§æ’å€¼
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    ///ËõÐ¡¹ýÂË£¬ ÏßÐÔ²åÖµ
+    ///ç¼©å°è¿‡æ»¤ï¼Œ çº¿æ€§æ’å€¼
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    ///´´½¨²ÄÖÊÏÔ¿¨¿Õ¼ä
+    ///åˆ›å»ºæè´¨æ˜¾å¡ç©ºé—´
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, m_width / 2, m_height / 2, 0, GL_RED, GL_UNSIGNED_BYTE, 0);
 
     return true;
@@ -100,7 +104,7 @@ void VideoWidget::repaint(const AVFrame * frame)
 {
     if (!frame) return;
 
-    // ÐÐ¶ÔÆëÎÊÌâ
+    // è¡Œå¯¹é½é—®é¢˜
     m_mutex.lock();
     if (frame->width != m_width || frame->height != m_height)
     {
@@ -108,10 +112,10 @@ void VideoWidget::repaint(const AVFrame * frame)
         LOG(ERROR) << "frame:" << frame->width << "x" << frame->height << ", widget:" << m_width << "x" << m_height;
         return;
     }
-    if (frame->linesize[0] == m_width)  // ÎÞÐè¶ÔÆë
+    if (frame->linesize[0] == m_width)  // æ— éœ€å¯¹é½
     {
         memcpy(m_yuv[0], frame->data[0], m_width * m_height);
-        memcpy(m_yuv[1], frame->data[1], m_width * m_height / 4);   // ¿í¸ß¶¼³ý2£¬ yuv420P
+        memcpy(m_yuv[1], frame->data[1], m_width * m_height / 4);   // å®½é«˜éƒ½é™¤2ï¼Œ yuv420P
         memcpy(m_yuv[2], frame->data[2], m_width * m_height / 4);
     }
     else
@@ -137,14 +141,10 @@ void VideoWidget::repaint(const AVFrame * frame)
    
     m_mutex.unlock();
 
-    update();   // Ë¢ÐÂÏÔÊ¾
+    update();   // åˆ·æ–°æ˜¾ç¤º
 }
 
-#define GET_STR(x) #x   //×Ô¶¯¼ÓË«ÒýºÅ
-#define A_VER   3
-#define T_VER   4
-
-//¶¥µãshader
+//é¡¶ç‚¹shader
 static const char *vString = GET_STR(
     attribute vec4 vertexIn;
     attribute vec2 textureIn;
@@ -157,7 +157,7 @@ static const char *vString = GET_STR(
     }
 );
 
-//Æ¬Ôªshader
+//ç‰‡å…ƒshader
 static const char *tString = GET_STR(
     varying vec2 textureOut;
     uniform sampler2D tex_y;
@@ -185,28 +185,28 @@ void VideoWidget::initializeGL()
 
     LOG(INFO) << "init QOpenGl";
 
-    // 1.³õÊ¼»¯opengl (QOpenGLFunctions¼Ì³Ð)º¯Êý
+    // 1.åˆå§‹åŒ–opengl (QOpenGLFunctionsç»§æ‰¿)å‡½æ•°
     initializeOpenGLFunctions();
 
-    // 2.program¼ÓÔØshader(¶¥µãºÍÆ¬Ôª)½Å±¾
-    ///¶¥µãshader
+    // 2.programåŠ è½½shader(é¡¶ç‚¹å’Œç‰‡å…ƒ)è„šæœ¬
+    ///é¡¶ç‚¹shader
     m_shader.addShaderFromSourceCode(QGLShader::Vertex, vString);
 
-    ///Æ¬Ôª£¨ÏñËØ£©
+    ///ç‰‡å…ƒï¼ˆåƒç´ ï¼‰
     m_shader.addShaderFromSourceCode(QGLShader::Fragment, tString);
 
-    ///ÉèÖÃ¶¥µã×ø±êµÄ±äÁ¿
+    ///è®¾ç½®é¡¶ç‚¹åæ ‡çš„å˜é‡
     m_shader.bindAttributeLocation("vertexIn", A_VER);
 
-    ///ÉèÖÃ²ÄÖÊ×ø±ê
+    ///è®¾ç½®æè´¨åæ ‡
     m_shader.bindAttributeLocation("textureIn", T_VER);
 
-    // 3.±àÒëshader
+    // 3.ç¼–è¯‘shader
     LOG(INFO) << "shader link() = " << m_shader.link();
     LOG(INFO) << "shader bind() = " << m_shader.bind();
 
-    // 4.´«µÝ¶¥µãºÍ²ÄÖÊ×ø±ê
-    ///¶¥µã
+    // 4.ä¼ é€’é¡¶ç‚¹å’Œæè´¨åæ ‡
+    ///é¡¶ç‚¹
     static const GLfloat ver[] = {
         -1.0f, -1.0f,
         1.0f,  -1.0f,
@@ -214,7 +214,7 @@ void VideoWidget::initializeGL()
         1.0f,  1.0f
     };
 
-    ///²ÄÖÊ×ø±ê
+    ///æè´¨åæ ‡
     static const GLfloat tex[] = {
         0.0f, 1.0f,
         1.0f, 1.0f,
@@ -222,15 +222,15 @@ void VideoWidget::initializeGL()
         1.0f, 0.0f
     };
 
-    ///¶¥µã
+    ///é¡¶ç‚¹
     glVertexAttribPointer(A_VER, 2, GL_FLOAT, 0, 0, ver);
     glEnableVertexAttribArray(A_VER);
 
-    ///²ÄÖÊ
+    ///æè´¨
     glVertexAttribPointer(T_VER, 2, GL_FLOAT, 0, 0, tex);
     glEnableVertexAttribArray(T_VER);
 
-    ///´Óshader»ñÈ¡²ÄÖÊ
+    ///ä»ŽshaderèŽ·å–æè´¨
     m_unis[0] = m_shader.uniformLocation("tex_y");
     m_unis[1] = m_shader.uniformLocation("tex_u");
     m_unis[2] = m_shader.uniformLocation("tex_v");
@@ -253,28 +253,28 @@ void VideoWidget::paintGL()
     }
     // Y
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, m_texs[0]);  //0²ã°ó¶¨µ½Y²ÄÖÊ
-    ///ÐÞ¸Ä²ÄÖÊÄÚÈÝ£¨¸´ÖÆÄÚ´æÄÚÈÝ£©
+    glBindTexture(GL_TEXTURE_2D, m_texs[0]);  //0å±‚ç»‘å®šåˆ°Yæè´¨
+    ///ä¿®æ”¹æè´¨å†…å®¹ï¼ˆå¤åˆ¶å†…å­˜å†…å®¹ï¼‰
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_width, m_height, GL_RED, GL_UNSIGNED_BYTE, m_yuv[0]);
-    ///Óëshader±äÁ¿¹ØÁª
+    ///ä¸Žshaderå˜é‡å…³è”
     glUniform1i(m_unis[0], 0);
 
     // U
     glActiveTexture(GL_TEXTURE0 + 1);
-    glBindTexture(GL_TEXTURE_2D, m_texs[1]);  //1²ã°ó¶¨µ½U²ÄÖÊ
-    ///ÐÞ¸Ä²ÄÖÊÄÚÈÝ£¨¸´ÖÆÄÚ´æÄÚÈÝ£©
+    glBindTexture(GL_TEXTURE_2D, m_texs[1]);  //1å±‚ç»‘å®šåˆ°Uæè´¨
+    ///ä¿®æ”¹æè´¨å†…å®¹ï¼ˆå¤åˆ¶å†…å­˜å†…å®¹ï¼‰
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_width / 2, m_height / 2, GL_RED, GL_UNSIGNED_BYTE, m_yuv[1]);
-    ///Óëshader±äÁ¿¹ØÁª
+    ///ä¸Žshaderå˜é‡å…³è”
     glUniform1i(m_unis[1], 1);
 
     // V
     glActiveTexture(GL_TEXTURE0 + 2);
-    glBindTexture(GL_TEXTURE_2D, m_texs[2]);  //2²ã°ó¶¨µ½V²ÄÖÊ
-    ///ÐÞ¸Ä²ÄÖÊÄÚÈÝ£¨¸´ÖÆÄÚ´æÄÚÈÝ£©
+    glBindTexture(GL_TEXTURE_2D, m_texs[2]);  //2å±‚ç»‘å®šåˆ°Væè´¨
+    ///ä¿®æ”¹æè´¨å†…å®¹ï¼ˆå¤åˆ¶å†…å­˜å†…å®¹ï¼‰
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_width / 2, m_height / 2, GL_RED, GL_UNSIGNED_BYTE, m_yuv[2]);
-    ///Óëshader±äÁ¿¹ØÁª
+    ///ä¸Žshaderå˜é‡å…³è”
     glUniform1i(m_unis[2], 2);
 
-    // ÏÔÊ¾
+    // æ˜¾ç¤º
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }

@@ -1,4 +1,4 @@
-#include "VideoThread.h"
+ï»¿#include "VideoThread.h"
 #include "Decode.h"
 #include "VideoWidget.h"
 #include "glog/logging.h"
@@ -41,7 +41,7 @@ bool VideoThread::open(AVCodecParameters *param, VideoPlayInterface *videoInter)
     m_syncPts = 0;
     m_pause = false;
     m_start = true;
-    start();    // ¿ªÊ¼qtÏß³Ì
+    start();    // å¼€å§‹qtçº¿ç¨‹
 
     return true;
 }
@@ -60,14 +60,14 @@ void VideoThread::close()
     m_start = false;
     m_mutex.unlock();
 
-    wait();     // µÈ´ıQTÏß³Ì½áÊø
+    wait();     // ç­‰å¾…QTçº¿ç¨‹ç»“æŸ
 }
 
 void VideoThread::clear()
 {
     std::lock_guard<std::mutex> lck(m_mutex);
 
-    // ÇåÀí½âÂë»º³å
+    // æ¸…ç†è§£ç ç¼“å†²
     if (m_decode)
     {
         m_decode->clear();
@@ -133,7 +133,7 @@ void VideoThread::run()
             continue;
         }
 
-        // ÒôÊÓÆµÍ¬²½, ÈôÒôÆµÉÏÒ»Ö¡²¥·ÅÊ±¼äĞ¡ÓÚÉÏÒ»Ö¡ÊÓÆµ
+        // éŸ³è§†é¢‘åŒæ­¥, è‹¥éŸ³é¢‘ä¸Šä¸€å¸§æ’­æ”¾æ—¶é—´å°äºä¸Šä¸€å¸§è§†é¢‘
         if (m_syncPts > 0 && m_syncPts < m_decode->pts())
         {
             m_mutex.unlock();
@@ -160,10 +160,10 @@ void VideoThread::run()
             continue;
         }
 
-        // Ò»´Îsend¶à´Îrecv
+        // ä¸€æ¬¡sendå¤šæ¬¡recv
         while (true)
         {
-            // »ñÈ¡Ò»Ö¡
+            // è·å–ä¸€å¸§
             AVFrame *frame = m_decode->recv();
             if (!frame)
             {
@@ -171,13 +171,13 @@ void VideoThread::run()
                 break;
             }
 
-            // ÏÔÊ¾ÊÓÆµ,¾­²âÊÔºÄÊ±²»µ½1ms
+            // æ˜¾ç¤ºè§†é¢‘,ç»æµ‹è¯•è€—æ—¶ä¸åˆ°1ms
             m_play->repaint(frame);
 
-            // ÊÍ·ÅÒ»Ö¡×ÊÔ´
+            // é‡Šæ”¾ä¸€å¸§èµ„æº
             Decode::freeFrame(&frame);
         }
         m_mutex.unlock();
-        msleep(1);  // ±ÜÃâ×ÊÔ´Õ¼ÓÃ¹ı¸ß
+        msleep(1);  // é¿å…èµ„æºå ç”¨è¿‡é«˜
     }
 }

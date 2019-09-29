@@ -1,14 +1,56 @@
 <RCC>
   <qresource prefix="MediaPlayer">
     <file>Resources/MediaPlayer.ico</file>
-    <file>Resources/next_24px.ico</file>
-    <file>Resources/previous_24px.ico</file>
-    <file>Resources/close_24px_.ico</file>
-    <file>Resources/mini_24px.ico</file>
-    <file>Resources/pause_32px.ico</file>
-    <file>Resources/play_32px.ico</file>
-    <file>Resources/speaker_24px.ico</file>
-    <file>Resources/speaker_mute_24px.ico</file>
-    <file>Resources/stop_24px.ico</file>
+  </qresource>
+  <qresource prefix="normal">
+    <file>Resources/normal/history_px48_normal.png</file>
+    <file>Resources/normal/video_full_px48_normal.png</file>
+    <file>Resources/normal/video_recover_px48_normal.png</file>
+    <file>Resources/normal/win_recover_px32_normal.png</file>
+    <file>Resources/normal/next_px48_normal.png</file>
+    <file>Resources/normal/pause_px48_normal.png</file>
+    <file>Resources/normal/play_px48_normal.png</file>
+    <file>Resources/normal/previous_px48_normal.png</file>
+    <file>Resources/normal/stop_px48_normal.png</file>
+    <file>Resources/normal/vol_high_px48_normal.png</file>
+    <file>Resources/normal/vol_low_px48_normal.png</file>
+    <file>Resources/normal/vol_mute_px48_normal.png</file>
+    <file>Resources/normal/win_close_px32_normal.png</file>
+    <file>Resources/normal/win_max_px32_normal.png</file>
+    <file>Resources/normal/win_min_px32_normal.png</file>
+  </qresource>
+  <qresource prefix="hover">
+    <file>Resources/hover/history_px48_hover.png</file>
+    <file>Resources/hover/video_full_px48_hover.png</file>
+    <file>Resources/hover/video_recover_px48_hover.png</file>
+    <file>Resources/hover/win_recover_px32_hover.png</file>
+    <file>Resources/hover/next_px48_hover.png</file>
+    <file>Resources/hover/pause_px48_hover.png</file>
+    <file>Resources/hover/play_px48_hover.png</file>
+    <file>Resources/hover/previous_px48_hover.png</file>
+    <file>Resources/hover/stop_px48_hover.png</file>
+    <file>Resources/hover/vol_high_px48_hover.png</file>
+    <file>Resources/hover/vol_low_px48_hover.png</file>
+    <file>Resources/hover/vol_mute_px48_hover.png</file>
+    <file>Resources/hover/win_close_px32_hover.png</file>
+    <file>Resources/hover/win_max_px32_hover.png</file>
+    <file>Resources/hover/win_min_px32_hover.png</file>
+  </qresource>
+  <qresource prefix="pressed">
+    <file>Resources/pressed/history_px48_pressed.png</file>
+    <file>Resources/pressed/video_full_px48_pressed.png</file>
+    <file>Resources/pressed/win_recover_px32_pressed.png</file>
+    <file>Resources/pressed/video_recover_px48_pressed.png</file>
+    <file>Resources/pressed/next_px48_pressed.png</file>
+    <file>Resources/pressed/pause_px48_pressed.png</file>
+    <file>Resources/pressed/play_px48_pressed.png</file>
+    <file>Resources/pressed/previous_px48_pressed.png</file>
+    <file>Resources/pressed/stop_px48_pressed.png</file>
+    <file>Resources/pressed/vol_high_px48_pressed.png</file>
+    <file>Resources/pressed/vol_low_px48_pressed.png</file>
+    <file>Resources/pressed/vol_mute_px48_pressed.png</file>
+    <file>Resources/pressed/win_close_px32_pressed.png</file>
+    <file>Resources/pressed/win_max_px32_pressed.png</file>
+    <file>Resources/pressed/win_min_px32_pressed.png</file>
   </qresource>
 </RCC>

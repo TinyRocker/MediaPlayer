@@ -1,4 +1,4 @@
-#include "AudioPlay.h"
+ï»¿#include "AudioPlay.h"
 #include "glog/logging.h"
 #include <QAudioFormat>
 #include <QAudioOutput>
@@ -30,7 +30,7 @@ bool AudioPlay::open(int sampleRate, int sampleSize, int channels)
     fmt.setSampleType(QAudioFormat::UnSignedInt);
 
     m_output = new QAudioOutput(fmt);
-    m_io = m_output->start();   // ¿ªÊ¼²¥·Å
+    m_io = m_output->start();   // å¼€å§‹æ’­æ”¾
     if (!m_io)
     {
         LOG(ERROR) << "QAudioOutput start failed!";
@@ -46,7 +46,7 @@ void AudioPlay::close()
 
     if (m_io)
     {
-        m_io->close();  // ¹Ø±Õio
+        m_io->close();  // å…³é—­io
         m_io = nullptr;
     }
     if (m_output)
@@ -111,8 +111,8 @@ int64_t AudioPlay::noPlayMs()
         return 0;
     }
     
-    double size = m_output->bufferSize() - m_output->bytesFree();       // »¹Î´²¥·ÅµÄ×Ö½ÚÊı£¬buff - ¿ÕÏĞ¿Õ¼ä
-    double secSize = m_sampleRate * (m_sampleSize / 8) * m_channels;    // Ò»ÃëÒôÆµµÄ×Ö½Ú´óĞ¡
+    double size = m_output->bufferSize() - m_output->bytesFree();       // è¿˜æœªæ’­æ”¾çš„å­—èŠ‚æ•°ï¼Œbuff - ç©ºé—²ç©ºé—´
+    double secSize = m_sampleRate * (m_sampleSize / 8) * m_channels;    // ä¸€ç§’éŸ³é¢‘çš„å­—èŠ‚å¤§å°
     if (size <= 0 || secSize <= 0)
     {
         return 0;

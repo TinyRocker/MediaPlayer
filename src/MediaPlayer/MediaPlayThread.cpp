@@ -1,4 +1,4 @@
-#include "MediaPlayThread.h"
+ï»¿#include "MediaPlayThread.h"
 #include "Demux.h"
 #include "VideoThread.h"
 #include "AudioThread.h"
@@ -52,7 +52,7 @@ bool MediaPlayThread::open(const char * url, VideoPlayInterface *videoInter)
         return false;
     }
 
-    // ³õÊ¼»¯video widget
+    // åˆå§‹åŒ–video widget
     videoInter->initWidget(m_demux->width(), m_demux->height());
     if (m_video && !m_video->open(m_demux->getVideoCodecParam(), videoInter))
     {
@@ -66,7 +66,7 @@ bool MediaPlayThread::open(const char * url, VideoPlayInterface *videoInter)
         delete m_audio;
         m_audio = nullptr;
     }
-    // ÊÓÆµ»òÒôÆµÖÁÉÙ´æÔÚÒ»¸ö
+    // è§†é¢‘æˆ–éŸ³é¢‘è‡³å°‘å­˜åœ¨ä¸€ä¸ª
     if (!m_video && !m_audio)
     {
         return false;
@@ -74,7 +74,7 @@ bool MediaPlayThread::open(const char * url, VideoPlayInterface *videoInter)
     m_totalMs = m_demux->totalMs();
     m_pause = false;
     m_start = true;
-    start();    // ¿ªÆôQTÏß³Ì
+    start();    // å¼€å¯QTçº¿ç¨‹
 
     return true;
 }
@@ -103,7 +103,7 @@ void MediaPlayThread::close()
     }
     m_mutex.unlock();
 
-    wait();     // µÈ´ýqtÏß³ÌÍË³ö  
+    wait();     // ç­‰å¾…qtçº¿ç¨‹é€€å‡º  
 }
 
 void MediaPlayThread::clear()
@@ -141,25 +141,25 @@ void MediaPlayThread::setPause(bool pause)
 
 void MediaPlayThread::seek(double pos)
 {
-    // »ñÈ¡²¥·Å×´Ì¬
+    // èŽ·å–æ’­æ”¾çŠ¶æ€
     const bool status = m_pause;
 
-    // 1.ÈôÎ´ÔÝÍ££¬ÏÈÔÝÍ£²¥·Å
+    // 1.è‹¥æœªæš‚åœï¼Œå…ˆæš‚åœæ’­æ”¾
     if (!m_pause)
     {
         setPause(true);
     }
 
-    // 2.ÇåÀí»º³å
+    // 2.æ¸…ç†ç¼“å†²
     clear();
 
     m_mutex.lock();
     if (m_demux)
     {
-        // seek µ½Ö¸¶¨Î»ÖÃÖ¡µÄÇ°Ò»¸ö IÖ¡´¦
+        // seek åˆ°æŒ‡å®šä½ç½®å¸§çš„å‰ä¸€ä¸ª Iå¸§å¤„
         m_demux->seek(pos);
 
-        // Ìø¹ýÖ¸¶¨Ö¡Ç°ÃæµÄÖ¡
+        // è·³è¿‡æŒ‡å®šå¸§å‰é¢çš„å¸§
         int64_t seek_pts = pos * m_totalMs;
         while (m_start)
         {
@@ -189,7 +189,7 @@ void MediaPlayThread::seek(double pos)
     }
     m_mutex.unlock();
 
-    // ½«²¥·Å×´Ì¬»¹Ô­
+    // å°†æ’­æ”¾çŠ¶æ€è¿˜åŽŸ
     if (status != m_pause)
     {
         setPause(status);
@@ -204,6 +204,24 @@ void MediaPlayThread::setVolumeValue(double num)
     {
         m_audio->setVolumeValue(num);
     }
+}
+
+int MediaPlayThread::width() const
+{
+    if (!m_demux)
+    {
+        return 0;
+    }
+    return m_demux->width();
+}
+
+int MediaPlayThread::height() const
+{
+    if (!m_demux)
+    {
+        return 0;
+    }
+    return m_demux->height();
 }
 
 void MediaPlayThread::run()
@@ -227,7 +245,7 @@ void MediaPlayThread::run()
             continue;
         }
         
-        // ÒôÊÓÆµÍ¬²½
+        // éŸ³è§†é¢‘åŒæ­¥
         if (m_video && m_audio)
         {
             m_pts = m_audio->pts();

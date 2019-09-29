@@ -1,4 +1,4 @@
-#include "DecodeThread.h"
+ï»¿#include "DecodeThread.h"
 #include "Decode.h"
 #include "glog/logging.h"
 
@@ -23,7 +23,7 @@ void DecodeThread::pushPacket(AVPacket *pkt)
         return;
     }
 
-    // ×èÈûÖ±ÖÁĞ´Èë³É¹¦
+    // é˜»å¡ç›´è‡³å†™å…¥æˆåŠŸ
     while (true)
     {
         m_queLck.lock();
@@ -57,7 +57,7 @@ void DecodeThread::clearCache()
 {
     m_queLck.lock();
 
-    // ÇåÀí¶ÓÁĞÖĞµÄAVPacket
+    // æ¸…ç†é˜Ÿåˆ—ä¸­çš„AVPacket
     while (!m_pktQue.empty())
     {
         AVPacket *pkt = m_pktQue.front();

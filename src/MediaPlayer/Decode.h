@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <mutex>
 
 class AVCodecParameters;
@@ -12,18 +12,18 @@ public:
     Decode();
     virtual ~Decode();
 
-    // ´ò¿ª½âÂëÆ÷£¬²¢ÊÍ·Å¿Õ¼ä
+    // æ‰“å¼€è§£ç å™¨ï¼Œå¹¶é‡Šæ”¾ç©ºé—´
     bool open(AVCodecParameters *param);
     void close();
     void clear();
 
-    // ·¢ËÍÒ»¸öpacket°üµ½½âÂëÏß³Ì
+    // å‘é€ä¸€ä¸ªpacketåŒ…åˆ°è§£ç çº¿ç¨‹
     bool send(AVPacket *pkt);
 
-    // ÊÕµ½½âÂëÏß³ÌÊı¾İ£¬Ò»´Îsend¿ÉÄÜĞèÒª¶à´Îrecv, ½âÂëºóµÄÊı¾İÎªAVFrame,¿Õ¼äÎªdecodeÉêÇë
+    // æ”¶åˆ°è§£ç çº¿ç¨‹æ•°æ®ï¼Œä¸€æ¬¡sendå¯èƒ½éœ€è¦å¤šæ¬¡recv, è§£ç åçš„æ•°æ®ä¸ºAVFrame,ç©ºé—´ä¸ºdecodeç”³è¯·
     AVFrame* recv();
 
-    // ÊÍ·Å AVFrame AVPacket
+    // é‡Šæ”¾ AVFrame AVPacket
     static void freeFrame(AVFrame **frame);
     static void freePacket(AVPacket **packet);
 
@@ -32,6 +32,6 @@ private:
     std::mutex m_mutex;
     AVCodecContext *m_codecCtx = nullptr;
     AVCodecParameters *m_codecParam = nullptr;
-    long long m_pts = 0;    // µ±Ç°½âÂëµ½µÄpts
+    long long m_pts = 0;    // å½“å‰è§£ç åˆ°çš„pts
 };
 

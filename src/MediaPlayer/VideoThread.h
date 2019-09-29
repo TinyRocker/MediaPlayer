@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "DecodeThread.h"
 #include <mutex>
 
@@ -15,7 +15,7 @@ public:
     void close();
     void clear();
 
-    // ½âÂëpts,Èô½ÓÊÕµÄ½âÂëÊı¾İµÄpts >= seekpts, return true²¢ÏÔÊ¾Í¼ÏñÍ¬Ê±ĞŞ¸ÄseekptsÎªµ±Ç°frameµÄpts
+    // è§£ç pts,è‹¥æ¥æ”¶çš„è§£ç æ•°æ®çš„pts >= seekpts, return trueå¹¶æ˜¾ç¤ºå›¾åƒåŒæ—¶ä¿®æ”¹seekptsä¸ºå½“å‰frameçš„pts
     bool repaintPts(AVPacket *pkt, int64_t& seekpts);
     void setPause(bool pause);
 
@@ -28,5 +28,5 @@ private:
     bool m_start = false;
     bool m_pause = false;
     VideoPlayInterface *m_play = nullptr;
-    long long m_syncPts = 0;    // Í¬²½Ê±¼ä£¬ÓÉÍâ²¿´«Èë
+    long long m_syncPts = 0;    // åŒæ­¥æ—¶é—´ï¼Œç”±å¤–éƒ¨ä¼ å…¥
 };

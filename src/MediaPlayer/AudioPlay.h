@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <mutex>
 
 class QAudioOutput;
@@ -17,7 +17,7 @@ public:
     bool writeData(const char *data, int datasize);
     int freeSpaceSize();
 
-    // ·µ»Ø»º³åÖÐ»¹Ã»ÓÐ²¥·ÅµÄÊ±¼ä ms
+    // è¿”å›žç¼“å†²ä¸­è¿˜æ²¡æœ‰æ’­æ”¾çš„æ—¶é—´ ms
     int64_t noPlayMs();
     void setPause(bool pause);
     void setVolumeValue(double num);

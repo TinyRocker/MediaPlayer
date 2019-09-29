@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
 #include <QGLShaderProgram>
@@ -16,27 +16,27 @@ public:
     VideoWidget(QWidget *parent);
     ~VideoWidget();
 
-    virtual bool initWidget(const int width, const int height);
+    virtual bool initWidget(int width, int height);
     virtual bool deinitWidget();
     
-    // repaint, ÏÔÊ¾Ò»Ö¡Êı¾İ
+    // repaint, æ˜¾ç¤ºä¸€å¸§æ•°æ®
     virtual void repaint(const AVFrame *frame);
 
     int videoWidth() const { return m_width; }
     int videoHeight() const { return m_height; }
 protected:
-    // ³õÊ¼»¯gl
+    // åˆå§‹åŒ–gl
     void initializeGL();
-    // ´°¿Ú³ß´ç±ä»¯
+    // çª—å£å°ºå¯¸å˜åŒ–
     void resizeGL(int w, int h);
-    // Ë¢ĞÂÏÔÊ¾
+    // åˆ·æ–°æ˜¾ç¤º
     void paintGL();
 private:
     std::mutex m_mutex;
-    QGLShaderProgram m_shader;       //shader³ÌĞò
-    GLuint m_unis[3] = { 0 };        //shaderÖĞµÄyuv±äÁ¿µØÖ·
-    GLuint m_texs[3] = { 0 };        //openglµÄtextureµØÖ·
-    uint8_t *m_yuv[3] = { nullptr }; //²ÄÖÊµÄÄÚ´æ¿Õ¼ä
+    QGLShaderProgram m_shader;       //shaderç¨‹åº
+    GLuint m_unis[3] = { 0 };        //shaderä¸­çš„yuvå˜é‡åœ°å€
+    GLuint m_texs[3] = { 0 };        //openglçš„textureåœ°å€
+    uint8_t *m_yuv[3] = { nullptr }; //æè´¨çš„å†…å­˜ç©ºé—´
 
     int m_width = 800;
     int m_height = 500;

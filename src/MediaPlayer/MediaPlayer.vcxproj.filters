@@ -133,9 +133,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="MediaPlayer.rc" />
-  </ItemGroup>
-  <ItemGroup>
     <Image Include="Resources\MediaPlayer.ico" />
   </ItemGroup>
 </Project>

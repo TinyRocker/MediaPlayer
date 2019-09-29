@@ -1,5 +1,5 @@
-#pragma once
-// ÒôÊÓÆµ½âÂëÏÔÊ¾Ïß³ÌµÄ»ùÀà
+ï»¿#pragma once
+// éŸ³è§†é¢‘è§£ç æ˜¾ç¤ºçº¿ç¨‹çš„åŸºç±»
 
 #include <QThread>
 #include <mutex>
