@@ -131,8 +131,14 @@
     <ClInclude Include="MediaPlayThread.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="resource1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\MediaPlayer.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="MediaPlayer.rc" />
   </ItemGroup>
 </Project>

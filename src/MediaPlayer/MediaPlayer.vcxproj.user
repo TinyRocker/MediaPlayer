@@ -9,7 +9,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <QTDIR>C:\Qt\Qt5.13.0\5.13.0\msvc2017_64</QTDIR>
-    <LocalDebuggerWorkingDirectory>..\..\bin\win64</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerWorkingDirectory>..\..\bin\win64_release</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerEnvironment>PATH=$(QTDIR)\bin%3b$(PATH)</LocalDebuggerEnvironment>
   </PropertyGroup>
