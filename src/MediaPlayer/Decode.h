@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include <mutex>
 
 class AVCodecParameters;
 class AVCodecContext;
@@ -29,7 +28,6 @@ public:
 
     long long pts() const { return m_pts; }
 private:
-    std::mutex m_mutex;
     AVCodecContext *m_codecCtx = nullptr;
     AVCodecParameters *m_codecParam = nullptr;
     long long m_pts = 0;    // 当前解码到的pts

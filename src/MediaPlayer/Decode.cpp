@@ -25,8 +25,6 @@ bool Decode::open(AVCodecParameters * param)
 
     close();
 
-    std::lock_guard<std::mutex> lck(m_mutex);
-
     m_codecParam = param;
     LOG(INFO) << "codec name:" << avcodec_descriptor_get(m_codecParam->codec_id)->name;
 
@@ -72,8 +70,6 @@ bool Decode::open(AVCodecParameters * param)
 
 void Decode::close()
 {
-    std::lock_guard<std::mutex> lck(m_mutex);
-
     if (m_codecParam)
     {
         avcodec_parameters_free(&m_codecParam);
@@ -90,8 +86,6 @@ void Decode::close()
 
 void Decode::clear()
 {
-    std::lock_guard<std::mutex> lck(m_mutex);
-
     if (m_codecCtx)
     {
         avcodec_flush_buffers(m_codecCtx);
@@ -107,7 +101,6 @@ bool Decode::send(AVPacket * pkt)
         return false;
     }
 
-    std::lock_guard<std::mutex> lck(m_mutex);
     if (!m_codecCtx)
     {
         LOG(ERROR) << "avcodec not open!";
@@ -126,8 +119,6 @@ bool Decode::send(AVPacket * pkt)
 
 AVFrame * Decode::recv()
 {
-    std::lock_guard<std::mutex> lck(m_mutex);
-
     if (!m_codecCtx)
     {
         LOG(ERROR) << "avcodec not open!";

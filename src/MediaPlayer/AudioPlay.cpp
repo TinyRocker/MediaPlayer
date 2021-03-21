@@ -15,8 +15,6 @@ bool AudioPlay::open(int sampleRate, int sampleSize, int channels)
 {
     close();
 
-    std::lock_guard<std::mutex> lck(m_mutex);
-
     m_sampleRate = sampleRate;
     m_sampleSize = sampleSize;
     m_channels = channels;
@@ -42,8 +40,6 @@ bool AudioPlay::open(int sampleRate, int sampleSize, int channels)
 
 void AudioPlay::close()
 {
-    std::lock_guard<std::mutex> lck(m_mutex);
-
     if (m_io)
     {
         m_io->close();  // 关闭io
@@ -59,7 +55,6 @@ void AudioPlay::close()
 
 void AudioPlay::clear()
 {
-    std::lock_guard<std::mutex> lck(m_mutex);
     if (m_io)
     {
         m_io->reset();
@@ -68,8 +63,6 @@ void AudioPlay::clear()
 
 bool AudioPlay::writeData(const char *data, int datasize)
 {
-    std::lock_guard<std::mutex> lck(m_mutex);
-
     if (!data || datasize <= 0)
     {
         LOG(ERROR) << "param error!";
@@ -93,8 +86,6 @@ bool AudioPlay::writeData(const char *data, int datasize)
 
 int AudioPlay::freeSpaceSize()
 {
-    std::lock_guard<std::mutex> lck(m_mutex);
-
     if (!m_output)
     {
         return 0;
@@ -104,8 +95,6 @@ int AudioPlay::freeSpaceSize()
 
 int64_t AudioPlay::noPlayMs()
 {
-    std::lock_guard<std::mutex> lck(m_mutex);
-
     if (!m_output)
     {
         return 0;
@@ -122,19 +111,15 @@ int64_t AudioPlay::noPlayMs()
 
 void AudioPlay::setPause(bool pause)
 {
-    m_mutex.lock();
     m_pause = pause;
     if (m_output)
     {
         m_pause ? m_output->suspend() : m_output->resume();
     }
-    m_mutex.unlock();
 }
 
 void AudioPlay::setVolumeValue(double num)
 {
-    std::lock_guard<std::mutex> lck(m_mutex);
-
     if (m_output)
     {
         m_output->setVolume(num);

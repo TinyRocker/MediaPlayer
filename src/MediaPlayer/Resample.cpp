@@ -20,8 +20,6 @@ bool Resample::open(AVCodecParameters * param)
 {
     close();
 
-    std::lock_guard<std::mutex> lck(m_mutex);
-
     if (!param) { return false; }
     m_codecParam = param;
     m_sampleRate = param->sample_rate;
@@ -53,8 +51,6 @@ bool Resample::open(AVCodecParameters * param)
 
 void Resample::close()
 {
-    std::lock_guard<std::mutex> lck(m_mutex);
-
     if (m_codecParam)
     {
         //AVCodecParameters *tmp = m_codecParam;
@@ -71,8 +67,6 @@ void Resample::close()
 
 int Resample::resample(AVFrame * indata, unsigned char * outdata)
 {
-    std::lock_guard<std::mutex> lck(m_mutex);
-
     if (!indata)
     {
         LOG(ERROR) << "input param error!";

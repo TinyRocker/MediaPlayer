@@ -20,8 +20,6 @@ bool Demux::open(const char * url)
 {
     close();
 
-    std::lock_guard<std::mutex> lck(m_mutex);
-
     m_url = url;
     
     // 1. 打开url
@@ -96,8 +94,6 @@ bool Demux::open(const char * url)
 
 void Demux::close()
 {
-    std::lock_guard<std::mutex> lck(m_mutex);
-
     if (m_ic)
     {
         avformat_close_input(&m_ic);
@@ -110,8 +106,6 @@ void Demux::close()
 
 void Demux::clear()
 {
-    std::lock_guard<std::mutex> lck(m_mutex);
-
     if (m_ic)
     {
         // 清理读取缓冲
@@ -121,8 +115,6 @@ void Demux::clear()
 
 AVPacket *Demux::read()
 {
-    std::lock_guard<std::mutex> lck(m_mutex);
-    
     if (!m_ic)
     {
         LOG(ERROR) << "AVFormatContext not open!";
@@ -174,7 +166,7 @@ AVPacket * Demux::readVideoOnly()
         {
             Demux::freePacket(&pkt);
         }
-        QThread::usleep(1);
+        //QThread::usleep(1);
     }
     return nullptr;
 }
@@ -213,8 +205,6 @@ void Demux::freePacket(AVPacket ** packet)
 
 bool Demux::seek(double pos)
 {
-    std::lock_guard<std::mutex> lck(m_mutex);
-
     if (!m_ic)
     {
         LOG(ERROR) << "AVFormatContext not open!";
@@ -284,8 +274,6 @@ void Demux::freeCodecParam(AVCodecParameters **param)
 
 AVCodecParameters *Demux::getVideoCodecParam()
 {
-    std::lock_guard<std::mutex> lck(m_mutex);
-
     if (!m_vs)
     {
         LOG(WARNING) << "video stream is not exist!";
@@ -296,8 +284,6 @@ AVCodecParameters *Demux::getVideoCodecParam()
 
 AVCodecParameters *Demux::getAudioCodecParam()
 {
-    std::lock_guard<std::mutex> lck(m_mutex);
-
     if (!m_as)
     {
         LOG(WARNING) << "audio stream is not exist!";
@@ -308,12 +294,10 @@ AVCodecParameters *Demux::getAudioCodecParam()
 
 bool Demux::isVideo(const AVPacket * pkt)
 {
-    std::lock_guard<std::mutex> lck(m_mutex);
     return pkt && pkt->stream_index == m_vIndex;
 }
 
 bool Demux::isAudio(const AVPacket * pkt)
 {
-    std::lock_guard<std::mutex> lck(m_mutex);
     return pkt && pkt->stream_index == m_aIndex;
 }

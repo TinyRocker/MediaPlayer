@@ -24,8 +24,6 @@ bool MediaPlayThread::open(const char * url, VideoPlayInterface *videoInter)
 {
     close();
 
-    std::lock_guard<std::mutex> lck(m_mutex);
-
     if (!url || !videoInter)
     {
         LOG(ERROR) << "param is null!";
@@ -81,8 +79,9 @@ bool MediaPlayThread::open(const char * url, VideoPlayInterface *videoInter)
 
 void MediaPlayThread::close()
 {
+    m_start = false;
+
     m_mutex.lock();
-    m_start = false; 
     if (m_video)
     {
         m_video->close();
@@ -108,8 +107,6 @@ void MediaPlayThread::close()
 
 void MediaPlayThread::clear()
 {
-    std::lock_guard<std::mutex> lck(m_mutex);
-
     if (m_demux)
     {
         m_demux->clear();
@@ -126,8 +123,6 @@ void MediaPlayThread::clear()
 
 void MediaPlayThread::setPause(bool pause)
 {
-    std::lock_guard<std::mutex> lck(m_mutex);
-
     m_pause = pause;
     if (m_video)
     {
@@ -198,8 +193,6 @@ void MediaPlayThread::seek(double pos)
 
 void MediaPlayThread::setVolumeValue(double num)
 {
-    std::lock_guard<std::mutex> lck(m_mutex);
-
     if (m_audio)
     {
         m_audio->setVolumeValue(num);
@@ -224,39 +217,30 @@ int MediaPlayThread::height() const
     return m_demux->height();
 }
 
+// 读取音视频packet，存入队列
 void MediaPlayThread::run()
 {
     while (m_start)
     {
-        m_mutex.lock();
-
-        //double check
-        if (!m_start)
-        {
-            m_mutex.unlock();
-            LOG(INFO) << "stop media thread! url:" << m_url.c_str();
-            break;
-        }
-
         if (m_pause)
         {
-            m_mutex.unlock();
             msleep(10);
             continue;
         }
-        
+
+        m_mutex.lock();
+
         // 音视频同步
         if (m_video && m_audio)
         {
             m_pts = m_audio->pts();
             m_video->syncPts(m_audio->pts());
         }
-
+        
         AVPacket *pkt = m_demux->read();
         if (!pkt)
         {
             m_mutex.unlock();
-            msleep(1);
             continue;
         }
         else if (m_audio && m_demux->isAudio(pkt))
@@ -266,8 +250,14 @@ void MediaPlayThread::run()
         else if (m_video && m_demux->isVideo(pkt))
         {
             m_video->pushPacket(pkt);
+            
         }
         m_mutex.unlock();
-        usleep(1);
+
+        // TODO
+        // 不睡眠会引起高cpu占用率，但是由于未做解码缓存，睡眠会导致播放卡顿
+        // usleep(1);   
     }
+
+    LOG(INFO) << "stop media thread! url:" << m_url.c_str();
 }

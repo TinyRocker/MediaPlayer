@@ -18,8 +18,6 @@ VideoThread::~VideoThread()
 
 bool VideoThread::open(AVCodecParameters *param, VideoPlayInterface *videoInter)
 {
-    std::lock_guard<std::mutex> lck(m_mutex);
-
     if (!param || !videoInter)
     {
         LOG(ERROR) << "param is null!";
@@ -48,25 +46,24 @@ bool VideoThread::open(AVCodecParameters *param, VideoPlayInterface *videoInter)
 
 void VideoThread::close()
 {
+    m_start = false;
+
     m_mutex.lock();
     if (m_decode)
     {
         delete m_decode;
         m_decode = nullptr;
     }
-    clearCache();
-
     m_play = nullptr;
-    m_start = false;
     m_mutex.unlock();
+
+    clearCache();
 
     wait();     // 等待QT线程结束
 }
 
 void VideoThread::clear()
 {
-    std::lock_guard<std::mutex> lck(m_mutex);
-
     // 清理解码缓冲
     if (m_decode)
     {
@@ -77,8 +74,6 @@ void VideoThread::clear()
 
 bool VideoThread::repaintPts(AVPacket * pkt, int64_t& seekpts)
 {
-    std::lock_guard<std::mutex> lck(m_mutex);
-
     bool ret = m_decode->send(pkt);
     if (!ret)
     {
@@ -109,35 +104,26 @@ bool VideoThread::repaintPts(AVPacket * pkt, int64_t& seekpts)
 
 void VideoThread::setPause(bool pause)
 {
-    //m_mutex.lock();
     m_pause = pause;
-    //m_mutex.unlock();
 }
 
 void VideoThread::run()
 {
     while (m_start)
     {
-        m_mutex.lock();
-
-        // double check
-        if (!m_start)
-        {
-            m_mutex.unlock();
-            break;
-        }
         if (m_pause)
         {
-            m_mutex.unlock();
             msleep(10);
             continue;
         }
+        
+        m_mutex.lock();
 
         // 音视频同步, 若音频上一帧播放时间小于上一帧视频
         if (m_syncPts > 0 && m_syncPts < m_decode->pts())
         {
             m_mutex.unlock();
-            msleep(1);
+            usleep(1);
             continue;
         }
 
@@ -156,12 +142,11 @@ void VideoThread::run()
         {
             m_mutex.unlock();
             LOG(WARNING) << "m_decode->send is failed!";
-            msleep(1);
             continue;
         }
 
         // 一次send多次recv
-        while (true)
+        while (m_start && !m_pause)
         {
             // 获取一帧
             AVFrame *frame = m_decode->recv();
@@ -178,6 +163,6 @@ void VideoThread::run()
             Decode::freeFrame(&frame);
         }
         m_mutex.unlock();
-        msleep(1);  // 避免资源占用过高
     }
+    LOG(INFO) << "video decode thread stop!";
 }

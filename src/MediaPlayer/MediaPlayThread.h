@@ -29,7 +29,7 @@ public:
 protected:
     virtual void run();
 private:
-    std::mutex      m_mutex;
+    std::mutex      m_mutex;    // 保证多线程下 m_demux,m_video,m_audio指针操作的安全
     std::string     m_url;
     bool            m_start = false;
     Demux           *m_demux = nullptr;

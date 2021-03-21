@@ -2,7 +2,6 @@
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
 #include <QGLShaderProgram>
-#include <mutex>
 #include "VideoPlayInterface.h"
 
 class VideoWidget :
@@ -32,7 +31,6 @@ protected:
     // 刷新显示
     void paintGL();
 private:
-    std::mutex m_mutex;
     QGLShaderProgram m_shader;       //shader程序
     GLuint m_unis[3] = { 0 };        //shader中的yuv变量地址
     GLuint m_texs[3] = { 0 };        //opengl的texture地址

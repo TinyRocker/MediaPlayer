@@ -1,0 +1,7 @@
+Log file created at: 2021/03/22 00:12:15
+Running on machine: TINYROCK
+Log line format: [IWEF]mmdd hh:mm:ss.uuuuuu threadid file:line] msg
+20210322 00:12:15.237092 14996 INFO VideoWidget.cpp:176 VideoWidget::initializeGL] init QOpenGl
+20210322 00:12:15.240094 14996 INFO VideoWidget.cpp:195 VideoWidget::initializeGL] shader link() = 1
+20210322 00:12:15.240094 14996 INFO VideoWidget.cpp:196 VideoWidget::initializeGL] shader bind() = 1
+20210322 00:12:15.241911 14996 INFO VideoWidget.cpp:231 VideoWidget::resizeGL] resize 711 x 400

@@ -2,13 +2,13 @@
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <QTDIR>C:\Qt\Qt5.13.0\5.13.0\msvc2017_64</QTDIR>
-    <LocalDebuggerWorkingDirectory>..\..\bin\win64</LocalDebuggerWorkingDirectory>
+    <QTDIR>C:\Qt\Qt5.14.2\5.14.2\msvc2017_64</QTDIR>
+    <LocalDebuggerWorkingDirectory>..\..\bin\win64_debug</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerEnvironment>PATH=$(QTDIR)\bin%3b$(PATH)</LocalDebuggerEnvironment>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <QTDIR>C:\Qt\Qt5.13.0\5.13.0\msvc2017_64</QTDIR>
+    <QTDIR>C:\Qt\Qt5.14.2\5.14.2\msvc2017_64</QTDIR>
     <LocalDebuggerWorkingDirectory>..\..\bin\win64_release</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerEnvironment>PATH=$(QTDIR)\bin%3b$(PATH)</LocalDebuggerEnvironment>

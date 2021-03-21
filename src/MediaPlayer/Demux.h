@@ -1,6 +1,5 @@
 ﻿#pragma once
 #include <string>
-#include <mutex>
 
 class AVFormatContext;
 class AVCodecParameters;
@@ -48,7 +47,6 @@ public:
     int minute() const { return m_minutes; }
     int second() const { return m_seconds; }
 private:
-    std::mutex m_mutex;     // 防止多线程调用
     std::string m_url;
     AVFormatContext *m_ic = nullptr;
     AVStream *m_vs = nullptr;

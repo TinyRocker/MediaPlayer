@@ -25,8 +25,6 @@ bool AudioThread::open(AVCodecParameters *param)
         return false;
     }
 
-    std::lock_guard<std::mutex> lck(m_mutex);
-
     if (!m_decode)
     {
         m_decode = new Decode;
@@ -66,6 +64,8 @@ bool AudioThread::open(AVCodecParameters *param)
 
 void AudioThread::close()
 {
+    m_start = false;
+
     m_mutex.lock();
     if (m_decode)
     {
@@ -87,18 +87,14 @@ void AudioThread::close()
         delete m_play;
         m_play = nullptr;
     }
-
-    clearCache();    // 清理队列缓冲
-    m_start = false;
     m_mutex.unlock();
 
+    clearCache();    // 清理队列缓冲
     wait();     // 等待qt线程退出
 }
 
 void AudioThread::clear()
 {
-    std::lock_guard<std::mutex> lck(m_mutex);
-
     if (m_decode)
     {
         m_decode->clear();
@@ -114,7 +110,6 @@ void AudioThread::setPause(bool pause)
 {
     m_pause = pause;    // 将pause优先级设高，已实现在另外一个线程中修改值可以立即生效
 
-    std::lock_guard<std::mutex> lck(m_mutex);
     if (m_play)
     {
         m_play->setPause(m_pause);
@@ -123,8 +118,6 @@ void AudioThread::setPause(bool pause)
 
 void AudioThread::setVolumeValue(double num)
 {
-    std::lock_guard<std::mutex> lck(m_mutex);
-
     if (m_play)
     {
         m_play->setVolumeValue(num);
@@ -137,18 +130,8 @@ void AudioThread::run()
 
     while (m_start)
     {
-        m_mutex.lock();
-
-        // double check
-        if (!m_start)
-        {
-            m_mutex.unlock();
-            break;
-        }
-
         if (m_pause)
         {
-            m_mutex.unlock();
             msleep(10);
             continue;
         }
@@ -156,11 +139,12 @@ void AudioThread::run()
         AVPacket *pkt = popPacket();
         if (!pkt)
         {
-            m_mutex.unlock();
             LOG(DETAIL) << "packet queue is empty!";
-            msleep(1);
+            msleep(10);
             continue;
         }
+
+        m_mutex.lock();
 
         bool ret = m_decode->send(pkt);
         Decode::freePacket(&pkt);
@@ -168,7 +152,6 @@ void AudioThread::run()
         {
             m_mutex.unlock();
             LOG(WARNING) << "m_decode->send is failed!";
-            msleep(1);
             continue;
         }
 
@@ -205,7 +188,8 @@ void AudioThread::run()
             }
         }
         m_mutex.unlock();
-        msleep(1);
     }
     delete pcm;
+
+    LOG(INFO) << "audio decode thread stop!";
 }

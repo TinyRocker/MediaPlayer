@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include <mutex>
+#include <stdint.h>
 
 class QAudioOutput;
 class QIODevice;
@@ -22,7 +22,6 @@ public:
     void setPause(bool pause);
     void setVolumeValue(double num);
 private:
-    std::mutex m_mutex;
     bool       m_pause = false;
     QAudioOutput *m_output = nullptr;
     QIODevice    *m_io = nullptr;

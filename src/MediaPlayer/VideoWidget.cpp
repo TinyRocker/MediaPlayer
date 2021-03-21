@@ -24,8 +24,6 @@ VideoWidget::~VideoWidget()
 bool VideoWidget::initWidget(int width, int height)
 {
     deinitWidget();
-
-    std::lock_guard<std::mutex> lck(m_mutex);
     
     LOG(INFO) << "widget:" << width << ", height:" << height;
     if (width <= 0 || height <= 0)
@@ -83,8 +81,6 @@ bool VideoWidget::initWidget(int width, int height)
 
 bool VideoWidget::deinitWidget()
 {
-    std::lock_guard<std::mutex> lck(m_mutex);
-
     delete m_yuv[0];
     delete m_yuv[1];
     delete m_yuv[2];
@@ -105,10 +101,8 @@ void VideoWidget::repaint(const AVFrame * frame)
     if (!frame) return;
 
     // 行对齐问题
-    m_mutex.lock();
     if (frame->width != m_width || frame->height != m_height)
     {
-        m_mutex.unlock();
         LOG(ERROR) << "frame:" << frame->width << "x" << frame->height << ", widget:" << m_width << "x" << m_height;
         return;
     }
@@ -138,8 +132,6 @@ void VideoWidget::repaint(const AVFrame * frame)
             memcpy(m_yuv[2] + m_width / 2 * i, frame->data[2] + frame->linesize[2] * i, m_width);
         }
     }
-   
-    m_mutex.unlock();
 
     update();   // 刷新显示
 }
@@ -181,8 +173,6 @@ static const char *tString = GET_STR(
 
 void VideoWidget::initializeGL()
 {
-    std::lock_guard<std::mutex> lck(m_mutex);
-
     LOG(INFO) << "init QOpenGl";
 
     // 1.初始化opengl (QOpenGLFunctions继承)函数
@@ -238,15 +228,11 @@ void VideoWidget::initializeGL()
 
 void VideoWidget::resizeGL(int w, int h)
 {
-    std::lock_guard<std::mutex> lck(m_mutex);
-
     LOG(INFO) << "resize " << w << " x " << h;
 }
 
 void VideoWidget::paintGL()
 {
-    std::lock_guard<std::mutex> lck(m_mutex);
-
     if (!(m_yuv[0] && m_yuv[1] && m_yuv[2]))
     {
         return;

@@ -34,7 +34,6 @@ void DecodeThread::pushPacket(AVPacket *pkt)
             break;
         }
         m_queLck.unlock();
-        msleep(1);
     }
 }
 
