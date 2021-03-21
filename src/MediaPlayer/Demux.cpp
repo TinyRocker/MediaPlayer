@@ -151,7 +151,7 @@ AVPacket * Demux::readVideoOnly()
     AVPacket *pkt = nullptr;
 
     // 防止阻塞
-    for (int i = 0; i < 100; ++i)
+    for (int i = 0; i < 1000; ++i)
     {
         pkt = read();
         if (!pkt)
@@ -166,7 +166,6 @@ AVPacket * Demux::readVideoOnly()
         {
             Demux::freePacket(&pkt);
         }
-        //QThread::usleep(1);
     }
     return nullptr;
 }
@@ -176,7 +175,7 @@ AVPacket * Demux::readAudioOnly()
     AVPacket *pkt = nullptr;
 
     // 防止阻塞
-    for (int i = 0; i < 100; ++i)
+    for (int i = 0; i < 1000; ++i)
     {
         pkt = read();
         if (!pkt)

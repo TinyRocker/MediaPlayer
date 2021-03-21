@@ -18,6 +18,7 @@ public:
     void clear();
     void setPause(bool pause);
     void setVolumeValue(double num);
+    bool playToPts(AVPacket* pkt, int64_t& seekpts);
     
     int64_t pts() const { return m_pts; }
 protected:

@@ -259,7 +259,7 @@ public:
         font.setBold(false);
         font.setWeight(50);
         hSlider_progress->setFont(font);
-        hSlider_progress->setFocusPolicy(Qt::StrongFocus);
+        hSlider_progress->setFocusPolicy(Qt::WheelFocus);
         hSlider_progress->setContextMenuPolicy(Qt::DefaultContextMenu);
         hSlider_progress->setStyleSheet(QString::fromUtf8("QSlider::groove\n"
 "{\n"
@@ -276,9 +276,9 @@ public:
 "{\n"
 "	background-color: rgb(23, 171, 255);\n"
 "}"));
-        hSlider_progress->setMaximum(999);
+        hSlider_progress->setMaximum(1000);
         hSlider_progress->setSingleStep(1);
-        hSlider_progress->setPageStep(10);
+        hSlider_progress->setPageStep(50);
         hSlider_progress->setValue(0);
         hSlider_progress->setOrientation(Qt::Horizontal);
         hSlider_progress->setInvertedAppearance(false);

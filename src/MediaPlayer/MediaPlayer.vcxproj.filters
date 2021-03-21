@@ -83,6 +83,9 @@
     <QtMoc Include="OpenUrl.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="VideoThread.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="MediaPlayer.ui">
@@ -114,9 +117,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="AudioThread.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="VideoThread.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="VideoPlayInterface.h">

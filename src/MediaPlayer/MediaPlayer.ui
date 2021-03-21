@@ -535,7 +535,7 @@ QPushButton::pressed
      </font>
     </property>
     <property name="focusPolicy">
-     <enum>Qt::StrongFocus</enum>
+     <enum>Qt::WheelFocus</enum>
     </property>
     <property name="contextMenuPolicy">
      <enum>Qt::DefaultContextMenu</enum>
@@ -558,13 +558,13 @@ QSlider::sub-page
 }</string>
     </property>
     <property name="maximum">
-     <number>999</number>
+     <number>1000</number>
     </property>
     <property name="singleStep">
      <number>1</number>
     </property>
     <property name="pageStep">
-     <number>10</number>
+     <number>50</number>
     </property>
     <property name="value">
      <number>0</number>

@@ -50,6 +50,9 @@ protected:
     virtual void keyPressEvent(QKeyEvent *event);
     virtual void keyReleaseEvent(QKeyEvent *event);
 
+private:
+    double getkeyPressSeekPos(Qt::Key key);
+
 private slots:
     void openFileOrUrl(const QString& text);
     void openUrl();

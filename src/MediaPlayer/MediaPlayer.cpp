@@ -30,6 +30,8 @@
 #define TEXT_OPEN_FILE  "打开文件"
 #define TEXT_OPEN_URL   "打开URL"
 
+const int64_t speed_time = 1000 * 10;   // 一次快进10秒
+
 MediaPlayer::MediaPlayer(QWidget *parent)
     : QWidget(parent)
 {
@@ -450,19 +452,15 @@ void MediaPlayer::keyPressEvent(QKeyEvent * event)
 {
     if (event->key() == Qt::Key_Left && m_isPlay)
     {
-        m_sliderPressed = true;
-        ui.hSlider_progress->setValue(ui.hSlider_progress->value() - ui.hSlider_progress->pageStep());
-        double pos = (double)ui.hSlider_progress->value() / ui.hSlider_progress->maximum();
+        double pos = getkeyPressSeekPos(Qt::Key_Left);
         m_media->seek(pos);
-        m_sliderPressed = false;
+        ui.hSlider_progress->setValue(ui.hSlider_progress->maximum() * pos);
     }
     else if (event->key() == Qt::Key_Right && m_isPlay)
     {
-        m_sliderPressed = true;
-        ui.hSlider_progress->setValue(ui.hSlider_progress->value() + ui.hSlider_progress->pageStep());
-        double pos = (double)ui.hSlider_progress->value() / ui.hSlider_progress->maximum();
+        double pos = getkeyPressSeekPos(Qt::Key_Right);
         m_media->seek(pos);
-        m_sliderPressed = false;
+        ui.hSlider_progress->setValue(ui.hSlider_progress->maximum() * pos);
     }
     else if (event->key() == Qt::Key_Up)
     {
@@ -481,6 +479,38 @@ void MediaPlayer::keyPressEvent(QKeyEvent * event)
 void MediaPlayer::keyReleaseEvent(QKeyEvent * event)
 {
     QWidget::keyReleaseEvent(event);
+}
+
+double MediaPlayer::getkeyPressSeekPos(Qt::Key key)
+{
+    int64_t play_time = m_media->pts();
+    int64_t file_time = m_media->totalMs();
+    double pos = 0;
+    if (file_time > speed_time * 20)
+    {
+        // 总时长大于20倍的快进时长 取soeed_time为一个快进间隔
+        if (key == Qt::Key_Left) 
+        {
+            pos = double(play_time - speed_time) / file_time;
+        }
+        else if (key == Qt::Key_Right)
+        {
+            pos = double(play_time + speed_time) / file_time;
+        }
+        
+    }
+    else
+    {
+        if (key == Qt::Key_Left)
+        {
+            pos = double(ui.hSlider_progress->value() - ui.hSlider_progress->pageStep()) / ui.hSlider_progress->maximum();
+        }
+        else if (key == Qt::Key_Right)
+        {
+            pos = double(ui.hSlider_progress->value() + ui.hSlider_progress->pageStep()) / ui.hSlider_progress->maximum();
+        }
+    }
+    return pos;
 }
 
 void MediaPlayer::openFileOrUrl(const QString& text)

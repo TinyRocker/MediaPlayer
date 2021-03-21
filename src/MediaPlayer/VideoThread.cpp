@@ -10,6 +10,8 @@ extern "C"
 
 VideoThread::VideoThread()
 {
+    QObject::connect(&m_playTimer, SIGNAL(timeout()), this, SLOT(update_play()));
+    m_playTimer.start(5);    // 5m刷新一次
 }
 
 VideoThread::~VideoThread()
@@ -69,10 +71,22 @@ void VideoThread::clear()
     {
         m_decode->clear();
     }
+
+    m_mutex.lock();
+    // 清理已缓存的要播放的帧
+    while (!m_frame_cache.empty())
+    {
+        AVFrame* frame = m_frame_cache.front();
+        m_frame_cache.pop();
+        Decode::freeFrame(&frame);
+    }
+    m_mutex.unlock();
+
     clearCache();
+    m_pts = 0;  // pts清0
 }
 
-bool VideoThread::repaintPts(AVPacket * pkt, int64_t& seekpts)
+bool VideoThread::repaintToPts(AVPacket * pkt, int64_t& seekpts)
 {
     bool ret = m_decode->send(pkt);
     if (!ret)
@@ -107,6 +121,7 @@ void VideoThread::setPause(bool pause)
     m_pause = pause;
 }
 
+// 解码线程
 void VideoThread::run()
 {
     while (m_start)
@@ -116,25 +131,23 @@ void VideoThread::run()
             msleep(10);
             continue;
         }
-        
-        m_mutex.lock();
 
-        // 音视频同步, 若音频上一帧播放时间小于上一帧视频
-        if (m_syncPts > 0 && m_syncPts < m_decode->pts())
+        if (m_frame_cache.size() > 10)
         {
-            m_mutex.unlock();
-            usleep(1);
+            // 缓存大于10帧 等待一下播放线程
+            msleep(10);
             continue;
         }
 
         AVPacket *pkt = popPacket();
         if (!pkt)
         {
-            m_mutex.unlock();
             LOG(DETAIL) << "packet queue is empty! wait for 1ms";
-            msleep(1);
+            msleep(10);
             continue;
         }
+
+        m_mutex.lock();
 
         bool ret = m_decode->send(pkt);
         Decode::freePacket(&pkt);
@@ -149,20 +162,40 @@ void VideoThread::run()
         while (m_start && !m_pause)
         {
             // 获取一帧
-            AVFrame *frame = m_decode->recv();
-            if (!frame)
+            AVFrame *cache_frame = m_decode->recv();
+            if (!cache_frame)
             {
                 LOG(DEBUG) << "m_decode->recv is failed!";
                 break;
             }
-
-            // 显示视频,经测试耗时不到1ms
-            m_play->repaint(frame);
-
-            // 释放一帧资源
-            Decode::freeFrame(&frame);
+            m_frame_cache.push(cache_frame); // 缓存帧
         }
         m_mutex.unlock();
     }
     LOG(INFO) << "video decode thread stop!";
+}
+
+// 播放画面的定时器
+void VideoThread::update_play()
+{
+    // 音视频同步 若视频播放过快 等待音频
+    if (m_syncPts > 0 && m_syncPts < m_pts)
+    {
+        return;
+    }
+
+    m_mutex.lock();
+    if (m_frame_cache.size() > 0)
+    {
+        AVFrame* frame = m_frame_cache.front();  // 播放帧
+        m_frame_cache.pop();
+        m_pts = frame->pts;         // 当前视频的
+
+        if (m_play)
+        {
+            m_play->repaint(frame); // 显示视频,经测试耗时不到1ms
+        }   
+        Decode::freeFrame(&frame);  // 释放一帧资源
+    }
+    m_mutex.unlock();
 }

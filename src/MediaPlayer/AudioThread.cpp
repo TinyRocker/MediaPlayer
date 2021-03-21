@@ -124,6 +124,35 @@ void AudioThread::setVolumeValue(double num)
     }
 }
 
+bool AudioThread::playToPts(AVPacket* pkt, int64_t& seekpts)
+{
+    bool ret = m_decode->send(pkt);
+    if (!ret)
+    {
+        LOG(ERROR) << "decode send failed!";
+        return false;
+    }
+
+    while (true)
+    {
+        AVFrame* frame = m_decode->recv();
+        if (!frame)
+        {
+            return false;
+        }
+        else if (frame->pts >= seekpts)
+        {
+            seekpts = frame->pts;
+            Decode::freeFrame(&frame);
+            return true;
+        }
+        else
+        {
+            Decode::freeFrame(&frame);
+        }
+    }
+}
+
 void AudioThread::run()
 {
     uint8_t *pcm = new uint8_t[1024 * 1024 * 10];   // 分配10M空间
@@ -165,7 +194,7 @@ void AudioThread::run()
                 break;
             }
 
-            // 当前解码的pts减去缓冲中未播放的时间
+            // 当前解码的pts减去缓冲中未播放的时间就是已经播放的时长
             m_pts = m_decode->pts() - m_play->noPlayMs();
 
             // 开始重采样
@@ -176,7 +205,6 @@ void AudioThread::run()
                 // 缓冲未播放完，空间不够
                 if (m_play->freeSpaceSize() < size)
                 {
-                    LOG(DETAIL) << "freeSpaceSize is not enough!";
                     msleep(1);
                     continue;
                 }

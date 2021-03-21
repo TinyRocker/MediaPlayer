@@ -161,7 +161,7 @@ void MediaPlayThread::seek(double pos)
             if (m_video)
             {
                 AVPacket *pkt = m_demux->readVideoOnly();
-                bool ret = m_video->repaintPts(pkt, seek_pts);
+                bool ret = m_video->repaintToPts(pkt, seek_pts);
                 Demux::freePacket(&pkt);
                 if (ret)
                 {
@@ -171,9 +171,14 @@ void MediaPlayThread::seek(double pos)
             }
             else if (m_audio)
             {
-                // TODO
-                LOG(WARNING) << "not realize audio seek!";
-                break;
+                AVPacket* pkt = m_demux->readAudioOnly();
+                bool ret = m_audio->playToPts(pkt, seek_pts);
+                Demux::freePacket(&pkt);
+                if (ret)
+                {
+                    m_pts = seek_pts;
+                    break;
+                }
             }
             else
             {
@@ -230,6 +235,15 @@ void MediaPlayThread::run()
 
         m_mutex.lock();
 
+        if (m_audio)
+        {
+            m_pts = m_audio->pts();
+        }
+        else if (m_video)
+        {
+            m_pts = m_video->pts();
+        }
+
         // 音视频同步
         if (m_video && m_audio)
         {
@@ -256,7 +270,7 @@ void MediaPlayThread::run()
 
         // TODO
         // 不睡眠会引起高cpu占用率，但是由于未做解码缓存，睡眠会导致播放卡顿
-        // usleep(1);   
+        usleep(10);   
     }
 
     LOG(INFO) << "stop media thread! url:" << m_url.c_str();
